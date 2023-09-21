@@ -67,8 +67,7 @@ export default createYoga({
       console.log(auth);
       return {
         user : auth
-          ? await verifyToken(auth)
-          : undefined
-      }
+          ? await verifyToken(auth) : undefined
+      } as Context;
     }
   });
