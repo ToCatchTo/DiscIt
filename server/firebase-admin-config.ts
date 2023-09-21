@@ -25,7 +25,7 @@ const firebaseAdminConfig = {
 if (admin.apps.length === 0) {
     // Initialize Firebase
     admin.initializeApp({
-        credential: admin.credential.cert(firebaseAdminConfig),
+        credential: admin.credential.cert(JSON.parse(JSON.stringify(firebaseAdminConfig))),
     });
 }
 export const adminAuth = admin.auth;
