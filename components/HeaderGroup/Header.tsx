@@ -1,23 +1,25 @@
-import MainTheme, { generalVariables } from '@/styles/themes/mainTheme';
+import mainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
 import { Box, ThemeProvider } from '@mui/material';
 import { NextPage } from 'next';
 import * as React from 'react';
 import { Logo } from '@/components/Logo';
 import { HeaderButtonList } from './Header__ButtonList';
+import { HeaderProfileButton } from './Header__ProfileButton';
 
 export const Header = () => {
 
     return (
-        <ThemeProvider theme={MainTheme} >
+        <ThemeProvider theme={mainTheme} >
             <Box sx={{
                 position: 'fixed',
-                backgroundColor: 'primary.main',
+                backgroundColor: customColors.black,
                 display: 'flex',
                 width: '100%',
-                height: '80px',
+                height: '70px',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: generalVariables.contentPadding,
+                
             }}>
                 <Box sx={{display: 'flex', alignItems: 'center', columnGap: '100px'}}>
                     <Box>
@@ -27,8 +29,10 @@ export const Header = () => {
                         <HeaderButtonList />
                     </Box>
                 </Box>
-                <Box>
-
+                <Box sx={{display: 'flex', alignItems: 'center', columnGap: '50px'}}> 
+                    <Box>
+                        <HeaderProfileButton />
+                    </Box>
                 </Box>
             </Box>
         </ThemeProvider>

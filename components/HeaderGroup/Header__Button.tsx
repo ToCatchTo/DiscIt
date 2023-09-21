@@ -1,4 +1,4 @@
-import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainTheme';
+import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
 import { Box, ThemeProvider, Typography } from '@mui/material';
 import { NextPage } from 'next';
 import * as React from 'react';
@@ -11,12 +11,14 @@ type Props = {
 };
 
 export const HeaderButton: FC<Props> = (props) => {
-    const {title} = props;
+    let {title} = props;
+
+    title = title.toUpperCase();
 
     return (
         <ThemeProvider theme={MainTheme}>
             <Link href={'#'} style={{textDecoration: 'none'}}>
-                <Typography sx={{color: customColors.text, fontSize: '30px', fontWeight: 'medium'}}>
+                <Typography sx={{color: customColors.white, fontSize: '22px', fontWeight: 'medium'}} >
                         {title}
                 </Typography>
             </Link>

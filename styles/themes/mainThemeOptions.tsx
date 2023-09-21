@@ -12,8 +12,8 @@ const lightPrimaryColor = '#2B7E80';
 const darkPrimaryColor = '#004B4D';
 // secondary color
 const secondaryColor = '#FFB57C';
-const lightSecondaryColor = '';
-const darkSecondaryColor = '';
+const lightSecondaryColor = '#FFFFFF';
+const darkSecondaryColor = '#000000';
 // custom colors
 export const customColors = {
   black: '#000000',
@@ -37,19 +37,31 @@ export const generalVariables = {
   contentPadding: '0px 140px'
 }
 
-const MainTheme: ThemeOptions = {
+const mainTheme: ThemeOptions = {
   palette: {
+    grey: {
+      800: '#555555',
+    },
     primary: {
-      main: primaryColor,
-      light: lightPrimaryColor,
-      dark: darkPrimaryColor
+      main: '#116466',
+      light: '#2B7E80',
+      dark: '#004B4D'
     },
     secondary: {
       main: secondaryColor,
       light: lightSecondaryColor,
       dark: darkSecondaryColor
+    },
+    text: {
+      primary: customColors.black,
+    },
+    action: {
+      hoverOpacity: 0.
+    },
+    background: {
+      paper: '#000000'
     }
-  }
+  },
 };
 
-export default MainTheme;
+export default mainTheme;

@@ -1,4 +1,4 @@
-import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainTheme';
+import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
 import { Box, ThemeProvider } from '@mui/material';
 import * as React from 'react';
 import { HeaderButton } from './Header__Button';
@@ -16,9 +16,6 @@ export const HeaderButtonList = () => {
                 </Box>
                 <Box sx={{}}>
                     <HeaderButton title='Záznamy'/>
-                </Box>
-                <Box sx={{}}>
-                    <HeaderButton title='Úspěchy'/>
                 </Box>
                 <Box sx={{}}>
                     <HeaderButton title='Přátelé'/>

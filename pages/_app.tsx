@@ -12,7 +12,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
 import createEmotionCache from '../utility/createEmotionCache';
-import mainTheme from '../styles/themes/mainTheme';
+import mainThemeOptions from '../styles/themes/mainThemeOptions';
 
 // Cache
 interface MyAppProps extends AppProps {
@@ -22,7 +22,7 @@ interface MyAppProps extends AppProps {
 const clientSideEmotionCache = createEmotionCache();
 
 // Vytvoření globální promměné theme
-const MainTheme = createTheme(mainTheme);
+const mainTheme = createTheme(mainThemeOptions);
 
 const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
@@ -33,7 +33,7 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
     <AuthContextProvider>
       <ApolloProvider client={client}>
         <CacheProvider value={emotionCache}>
-          <ThemeProvider theme={MainTheme}>
+          <ThemeProvider theme={mainTheme}>
             <CssBaseline />
             <Component {...pageProps} />
           </ThemeProvider>
