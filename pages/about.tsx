@@ -7,10 +7,10 @@ import * as React from 'react';
 import { ZigZag } from '@/components/Zig-zag';
 import { Footer } from '@/components/Footer';
 
-const Index: NextPage = () => {
-  const pagesArray = [''];
-  const hrefArray = ['/'];
-  const fileLevel = 1;
+const About: NextPage = () => {
+    const pagesArray = ['Domů', 'O hře'];
+    const hrefArray = ['/', '/about'];
+    const fileLevel = 2;
 
   return (
     <Box>
@@ -22,4 +22,4 @@ const Index: NextPage = () => {
   );
 };
 
-export default Index;
+export default About;

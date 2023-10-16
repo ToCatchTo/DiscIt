@@ -9,16 +9,16 @@ export const HeaderButtonList = () => {
         <ThemeProvider theme={MainTheme}>
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', columnGap: '50px' }}>
                 <Box sx={{}}>
-                    <HeaderButton title='O hře'/>
+                    <HeaderButton href='/about' title='O hře'/>
                 </Box>
                 <Box sx={{}}>
-                    <HeaderButton title='Hřiště'/>
+                    <HeaderButton href='#' title='Hřiště'/>
                 </Box>
                 <Box sx={{}}>
-                    <HeaderButton title='Záznamy'/>
+                    <HeaderButton href='#' title='Záznamy'/>
                 </Box>
                 <Box sx={{}}>
-                    <HeaderButton title='Přátelé'/>
+                    <HeaderButton href='#' title='Přátelé'/>
                 </Box>
             </Box>
         </ThemeProvider>
