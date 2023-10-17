@@ -52,6 +52,26 @@ const mainTheme: ThemeOptions = {
       light: lightSecondaryColor,
       dark: darkSecondaryColor
     },
+    info: {
+      main: '#000000',
+      light: lightSecondaryColor,
+      dark: darkSecondaryColor
+    },
+    warning: {
+      main: secondaryColor,
+      light: lightSecondaryColor,
+      dark: darkSecondaryColor
+    },
+    success: {
+      main: secondaryColor,
+      light: lightSecondaryColor,
+      dark: darkSecondaryColor
+    },
+    error: {
+      main: secondaryColor,
+      light: lightSecondaryColor,
+      dark: darkSecondaryColor
+    },
     text: {
       primary: customColors.black,
     },

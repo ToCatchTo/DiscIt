@@ -41,7 +41,7 @@ export const HeaderProfileButton = () => {
             <Link style={{color: customColors.white, textDecoration: 'none'}} href={'#'}>Settings</Link>
           </MenuItem>
           <MenuItem sx={{...hover}}>
-            <Link style={{color: customColors.white, textDecoration: 'none'}} href={'#'}>Logout</Link>
+            <Link style={{color: customColors.white, textDecoration: 'none'}} href={'/login'}>Logout</Link>
           </MenuItem>
         </Menu>
       </Box>
