@@ -11,11 +11,13 @@ const Index: NextPage = () => {
   const pagesArray = [''];
   const hrefArray = ['/'];
   const fileLevel = 1;
+  const title = 'Váš partner pro hru';
+  const perex = 'Lorem ipsum dolor sit amet, consectetuer adip iscing elit. Nullam Lorem ipsum dolor sit amet, consectetuer adip iscing elit. Nullam Lorem ipsum dolor sit amet, consectetuer.';
 
   return (
     <Box>
       <Header></Header>
-      <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} picturePath={'/media/targets-header.png'} />
+      <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/targets-header.png'} />
       <ZigZag />
       <Footer/>
     </Box>

@@ -5,6 +5,8 @@ import * as React from 'react';
 import { Logo } from '@/components/Logo';
 import { HeaderButtonList } from './Header__ButtonList';
 import { HeaderProfileButton } from './Header__ProfileButton';
+import isLoggedIn from '@/pages/login';
+import { NotLoggedButton } from './Header__NotLoggedButton';
 
 export const Header = () => {
 
@@ -19,7 +21,7 @@ export const Header = () => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: generalVariables.contentPadding,
-                
+                zIndex: 1,
             }}>
                 <Box sx={{display: 'flex', alignItems: 'center', columnGap: '100px'}}>
                     <Box>
@@ -31,7 +33,7 @@ export const Header = () => {
                 </Box>
                 <Box sx={{display: 'flex', alignItems: 'center', columnGap: '50px'}}> 
                     <Box>
-                        <HeaderProfileButton />
+                        { isLoggedIn ? <HeaderProfileButton /> : <NotLoggedButton />}
                     </Box>
                 </Box>
             </Box>

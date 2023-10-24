@@ -19,6 +19,8 @@ import { authUtils } from '@/firebase/authUtils';
 import mainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
 import { Header } from '@/components/HeaderGroup/Header';
 
+export let isLoggedIn: Boolean;
+
 const Login: NextPage = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [email, setEmail] = useState('');
@@ -29,11 +31,13 @@ const Login: NextPage = () => {
     event.preventDefault();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const loginResult = await authUtils.login(email, password);
+    isLoggedIn = loginResult;
   };
 
-  const hoverAnimation = {
+  const buttonHover = {
     "&:hover": {
-      border: '0px solid black'
+      backgroundColor: customColors.lightBackground,
+      color: customColors.black
     },
   };
 
@@ -72,7 +76,10 @@ const Login: NextPage = () => {
               sx={{ mt: 1 }}
             >
               <TextField
-                sx={{ border: '1px solid black', borderRadius: '5px', ...hoverAnimation}}
+                sx={{'& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    border: '1px solid black',
+                  },}}}
                 margin="normal"
                 required
                 fullWidth
@@ -88,7 +95,10 @@ const Login: NextPage = () => {
                 }}
               />
               <TextField
-                sx={{ border: '1px solid black', borderRadius: '5px', ...hoverAnimation}}
+                sx={{'& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    border: '1px solid black',
+                  },}}}
                 margin="normal"
                 required
                 fullWidth
@@ -111,18 +121,18 @@ const Login: NextPage = () => {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2}}
+                sx={{ mt: 3, mb: 2, backgroundColor: customColors.black, color: customColors.white, ...buttonHover }}
               >
                 Přihlásit se
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link component={NextLink} href="#" variant="body2">
+                  <Link component={NextLink} href="#" variant="body2" sx={{color: customColors.black, textDecorationColor: customColors.black}}>
                     Zapomněli jste heslo?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link component={NextLink} href="/register" variant="body2">
+                  <Link component={NextLink} href="/register" variant="body2" sx={{color: customColors.black, textDecorationColor: customColors.black}}>
                     Nemáte ještě už účet?
                   </Link>
                 </Grid>

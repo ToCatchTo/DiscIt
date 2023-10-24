@@ -29,22 +29,13 @@ const Login: NextPage = () => {
   const handleForm = async (event: any) => {
     event.preventDefault();
     const registerResult = await authUtils.register(email, password);
-    console.log(registerResult);
+    console.log("výsledek: " + registerResult);
   };
 
-  const btnStyle = {
-    '&': {
-      bgcolor: 'primary.main',
-    },
-    '&:hover': {
-      bgcolor: 'primary.light',
-      transition: 'ease-in-out 0.3s',
-    },
-  };
-
-  const hoverAnimation = {
+  const buttonHover = {
     "&:hover": {
-      border: '0px solid black'
+      backgroundColor: customColors.lightBackground,
+      color: customColors.black
     },
   };
 
@@ -83,7 +74,10 @@ const Login: NextPage = () => {
               sx={{ mt: 1 }}
             >
               <TextField
-                sx={{ border: '1px solid black', borderRadius: '5px', ...hoverAnimation}}
+                sx={{'& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    border: '1px solid black',
+                  },}}}
                 margin="normal"
                 required
                 fullWidth
@@ -99,7 +93,10 @@ const Login: NextPage = () => {
                 }}
               />
               <TextField
-                sx={{ border: '1px solid black', borderRadius: '5px', ...hoverAnimation}}
+                sx={{'& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    border: '1px solid black',
+                  },}}}
                 margin="normal"
                 required
                 fullWidth
@@ -122,13 +119,13 @@ const Login: NextPage = () => {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2, ...btnStyle }}
+                sx={{ mt: 3, mb: 2, backgroundColor: customColors.black, color: customColors.white, ...buttonHover }}
               >
                 Registrovat se
               </Button>
               <Grid container>
                 <Grid item>
-                  <Link component={NextLink} href="/login" variant="body2">
+                  <Link component={NextLink} href="/login" variant="body2" sx={{color: customColors.black, textDecorationColor: customColors.black}}>
                     Už máte účet?
                   </Link>
                 </Grid>
