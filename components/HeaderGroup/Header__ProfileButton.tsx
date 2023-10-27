@@ -4,7 +4,6 @@ import mainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { isLoggedIn } from '@/pages/login';
 
 export const HeaderProfileButton = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
@@ -28,9 +27,9 @@ export const HeaderProfileButton = () => {
     },
   };
 
-  const logOffAction = {
-    isLoggedIn: false
-  }
+  const handleLogout = () => {
+    localStorage.setItem('loginState', 'false');
+  };
 
   return (
     <ThemeProvider theme={mainTheme}>
@@ -46,7 +45,7 @@ export const HeaderProfileButton = () => {
             <Link style={{color: customColors.white, textDecoration: 'none'}} href={'#'}>Settings</Link>
           </MenuItem>
           <MenuItem sx={{...hover}}>
-            <Link style={{color: customColors.white, textDecoration: 'none', ...logOffAction}} href={'/login'}>Logout</Link>
+            <Link style={{color: customColors.white, textDecoration: 'none'}} href={'/login'} onClick={handleLogout}>Logout</Link>
           </MenuItem>
         </Menu>
       </Box>

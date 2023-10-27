@@ -4,6 +4,10 @@ import * as React from 'react';
 import { HeaderButton } from './Header__Button';
 
 export const HeaderButtonList = () => {
+    let isLoggedIn = false;
+    let loginState = localStorage.getItem('loginState');
+    if(loginState == 'true')
+        isLoggedIn = true;
 
     return (
         <ThemeProvider theme={MainTheme}>
@@ -15,11 +19,12 @@ export const HeaderButtonList = () => {
                     <HeaderButton href='#' title='Hřiště'/>
                 </Box>
                 <Box sx={{}}>
-                    <HeaderButton href='#' title='Záznamy'/>
+                    { isLoggedIn ? <HeaderButton href='#' title='Záznamy'/> : <Box></Box>}
                 </Box>
                 <Box sx={{}}>
-                    <HeaderButton href='#' title='Přátelé'/>
+                { isLoggedIn ? <HeaderButton href='#' title='Přátelé'/> : <Box></Box>}
                 </Box>
+
             </Box>
         </ThemeProvider>
     );

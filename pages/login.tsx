@@ -14,12 +14,13 @@ import {
 } from '@mui/material';
 import { NextPage } from 'next';
 import NextLink from 'next/link';
-import React, { FormEvent, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import { authUtils } from '@/firebase/authUtils';
 import mainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
 import { Header } from '@/components/HeaderGroup/Header';
 
-export let isLoggedIn: Boolean;
+let loginResult: Boolean;
+loginResult = false;
 
 const Login: NextPage = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -30,8 +31,8 @@ const Login: NextPage = () => {
   const handleForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const loginResult = await authUtils.login(email, password);
-    isLoggedIn = loginResult;
+    loginResult = await authUtils.login(email, password);
+    localStorage.setItem('loginState', JSON.stringify(loginResult));
   };
 
   const buttonHover = {
@@ -76,10 +77,18 @@ const Login: NextPage = () => {
               sx={{ mt: 1 }}
             >
               <TextField
-                sx={{'& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    border: '1px solid black',
-                  },}}}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    backgroundColor: customColors.white + '!important',
+                    '& fieldset': {
+                      border: '1px solid black',
+                    },
+                  },
+                  '& .css-rna1f-MuiInputBase-input-MuiOutlinedInput-input:-webkit-autofill': {
+                    '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
+                    '-webkit-text-fill-color': customColors.black,
+                  },
+                }}
                 margin="normal"
                 required
                 fullWidth
@@ -98,7 +107,13 @@ const Login: NextPage = () => {
                 sx={{'& .MuiOutlinedInput-root': {
                   '& fieldset': {
                     border: '1px solid black',
-                  },}}}
+                  },
+                },
+                '& .css-rna1f-MuiInputBase-input-MuiOutlinedInput-input:-webkit-autofill': {
+                  '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
+                  '-webkit-text-fill-color': customColors.black,
+                },
+              }}
                 margin="normal"
                 required
                 fullWidth

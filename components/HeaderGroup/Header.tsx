@@ -5,10 +5,14 @@ import * as React from 'react';
 import { Logo } from '@/components/Logo';
 import { HeaderButtonList } from './Header__ButtonList';
 import { HeaderProfileButton } from './Header__ProfileButton';
-import isLoggedIn from '@/pages/login';
 import { NotLoggedButton } from './Header__NotLoggedButton';
 
 export const Header = () => {
+
+    let isLoggedIn = false;
+    let loginState = localStorage.getItem('loginState');
+    if(loginState == 'true')
+        isLoggedIn = true;
 
     return (
         <ThemeProvider theme={mainTheme} >
