@@ -84,7 +84,7 @@ const Login: NextPage = () => {
                       border: '1px solid black',
                     },
                   },
-                  '& .css-rna1f-MuiInputBase-input-MuiOutlinedInput-input:-webkit-autofill': {
+                  '& css-4mhiq8-MuiInputBase-input-MuiOutlinedInput-input:-webkit-autofill': {
                     '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
                     '-webkit-text-fill-color': customColors.black,
                   },
@@ -109,7 +109,7 @@ const Login: NextPage = () => {
                     border: '1px solid black',
                   },
                 },
-                '& .css-rna1f-MuiInputBase-input-MuiOutlinedInput-input:-webkit-autofill': {
+                '& .css-4mhiq8-MuiInputBase-input-MuiOutlinedInput-input:-webkit-autofill': {
                   '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
                   '-webkit-text-fill-color': customColors.black,
                 },
