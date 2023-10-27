@@ -74,10 +74,17 @@ const Login: NextPage = () => {
               sx={{ mt: 1 }}
             >
               <TextField
-                sx={{'& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    border: '1px solid black',
-                  },}}}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': {
+                      border: '1px solid black',
+                    },
+                  },
+                  '& input:-webkit-autofill': {
+                    '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
+                    '-webkit-text-fill-color': customColors.black,
+                  },
+                }}
                 margin="normal"
                 required
                 fullWidth
@@ -93,10 +100,17 @@ const Login: NextPage = () => {
                 }}
               />
               <TextField
-                sx={{'& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    border: '1px solid black',
-                  },}}}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': {
+                      border: '1px solid black',
+                    },
+                  },
+                  '& input:-webkit-autofill': {
+                    '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
+                    '-webkit-text-fill-color': customColors.black,
+                  },
+                }}
                 margin="normal"
                 required
                 fullWidth
