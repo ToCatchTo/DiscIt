@@ -1,4 +1,6 @@
 import * as admin from 'firebase-admin';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 const firebaseAdminConfig = {
         "type": "service_account",
     "project_id": "discit-6f051",
@@ -11,21 +13,13 @@ const firebaseAdminConfig = {
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-b23is%40discit-6f051.iam.gserviceaccount.com",
     "universe_domain": "googleapis.com"
-    // type: "service_account",
-    //     project_id: "muzis-11dec",
-    //     private_key_id: "8ef93d1e4b30c79406c61f36388cd2182a9c74fe",
-    //     private_key: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDEI363Ypq1Enzk\nHMg/RE8LVzxqX9Og3FLo05CHbJdHjO7T9eGcVbr2huSU7ipPZ2eiID8n+/YojUkq\nbJOa2jAFnZ+gSDmBxSJUO4ugRcfBCd7gL1dNiqy1DGDb85od2xILvUD9z4QRtReM\n8o6fBlN6SKCurhVurOn2u3z/BVDeE5CnPIIZQZmfX3LtZbh7AlUckac7/X78YSqp\nazcRXpbAQ+FAzrRpb2f+csGOsxX1wmvDdGAyZdnTU2bhHDK7lKil9UVL6AFjdLF6\n++V+p8XVzlNqaE9PqjDGmwhEp5qRonyva1AqwhdpJcpnJY0qkJcyrJq0QMWspuvz\nET/B09jBAgMBAAECggEAHONPdAoZWCb/bweQNMVGURjJpK81d8FLktAqPs/vHhIz\nUNOrpX94+HtYqljDsYs818OhGa4CDOn2R0HToaCWJxWWn6BTm/nhev+EKphsedGO\n2n0OgjS1CDto/qxL3C7aYxE+Q8OvI36FF/TXrbNcUyvkQqYQMQtVsEnf+J2bUgHU\nWTyLNbHMJysR1w8HVNMQlBRqRZ32YwLi/KmUZs5Z3c9866vXwhfYLmxxTTuSID9N\nAoh1WL09XD5+wub9rgmq60nnjTlGT/QL8h9QNCf4voVI6SW2gv61TLKQAzl1J2hk\n1BcpwDNuD4M1A2/F9gEYQ9mZBGmQhXX8DopBdnsqewKBgQD39tP67MnWopLwGWxl\n2Iu0LYqYLgoM+Wo/RDBbS4EUV5erEH+rQySYMDzraiNvLuBVm9NP6rirQg1z+8mD\nHUiAy3keWeOB5emj5DL1yv+EEjEtKrZHTsMeduS8TCE7resfCtJCOUFXwjSdvgLm\na+tU3HpUCB9kN5TkmdfEpsGhCwKBgQDKfrWq58AGHVknrtxCDJsPBWl4ouB+3Kxe\nBUXc/vWqgVrdHJHVE3jwVybEKBC8aPw65EPbRXJGVM7JeMNmlx06D8xRZzHZWlbm\nppkivlPavbZHzOt5D0jm6Ual/ahZHILVXKvjl4lqDhqnUcP4y5YsqCAV867+oxXV\nhum680Wk4wKBgQCH1YnoMmCbGHH/3x13aTmWmUAL/2R4GQVv5O3MhT8PorAuAJq/\neceJKxukJn+Ev5waqYMHi2BgSI3QFIUeMyNtkokl7D3qAcWMh0y3Qt3YPpL72CME\nSwwuGxlQYS/vXmWnmqj1qCG4bmWeZ+F00neXBDRq5gw0PRJubCw7yNHXYwKBgAM4\n/wUoSQsP3oJeKw02DCWyDVqpJO9/7ZJVfSYmPJypEFwif0On2q3ghTJr/NAyz4jU\nZywPL+FkqiHUtS9lykZJSBQnk0iFQorLLfa6lrUNfeAop7q2fo+GOOSdY9d/N6nT\nnryxhbNVZCEzkO3dt5cgWdpflXJiAA/05LVf98THAoGAOVB3eHNLyumW7x7YlVKl\nT9GJNI+DKif+eZGqVn7/eAd84mRI1e5RJa+mOEzjWUgS16E4UwzHx+ekh9cORoSu\nRwsrk09LCIJzDMrPV0SPD45Flrs4pXTPZQyeG5rgo95cayKoDc71gTipYKIRNGrs\nWLGjbdiSSC5TSvsVCAdh7+o=\n-----END PRIVATE KEY-----\n",
-    //     client_email: "firebase-adminsdk-8zwl6@muzis-11dec.iam.gserviceaccount.com",
-    //     client_id: "104946486758294048537",
-    //     auth_uri: "https://accounts.google.com/o/oauth2/auth",
-    //     token_uri: "https://oauth2.googleapis.com/token",
-    //     auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-    //     client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-8zwl6%40muzis-11dec.iam.gserviceaccount.com"
 }
+
 if (admin.apps.length === 0) {
     // Initialize Firebase
     admin.initializeApp({
         credential: admin.credential.cert(JSON.parse(JSON.stringify(firebaseAdminConfig))),
     });
 }
+
 export const adminAuth = admin.auth;

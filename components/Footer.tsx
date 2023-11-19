@@ -6,7 +6,7 @@ import { Logo } from './Logo';
 export const Footer = () => {
 
     return (
-        <Box sx={{backgroundColor: customColors.darkBackground, width: '100%', 
+        <Box sx={{backgroundColor: customColors.black, width: '100%', 
             height: '80px', display: 'flex', justifyContent: 'center', alignItems: 'center',
             columnGap: '50px'
         }}>

@@ -1,7 +1,23 @@
-query Users {
+query UsersQuery {
     users {
-        name
         username
-        admin
+        email
     } 
+}
+
+query PlaygroundsQuery {
+    playgrounds {
+        holesNumber
+        isPublic
+        name
+        length
+        parSum
+    }
+}
+
+mutation CreateUserMutation($email: String!, $username: String!) {
+  createUser(email: $email, username: $username) {
+    email
+    username
+  }
 }

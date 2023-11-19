@@ -17,14 +17,20 @@ export const authUtils = {
             return true;
         } catch (error : any) {
             switch (error.code) {
+                case "auth/invalid-email":
+                    alert("Špatně zadaný email. Email musí být v tomto formátu: jan@novotny.cz");
+                    break;
                 case "auth/user-not-found":
-                    alert("User not found");
+                    alert("Uživatel nenalezen.");
                     break;
                 case "auth/wrong-password":
-                    alert("Wrong password");
+                    alert("Nesprávné heslo.");
+                    break;
+                case "auth/network-request-failed":
+                    alert("Chyba v síti. Prosím zkuste to znovu později.");
                     break;
                 default:
-                    alert("Unexpected error: " + error.message);
+                    alert("Nečekaný error :c : " + error.message);
             }
             return false;
         }
@@ -41,20 +47,30 @@ export const authUtils = {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             
-            // Add user to the Firebase Realtime Database
             if (user) {
-                router.push("/login");
-                await set(ref(database, `users/${user.uid}`), {
+                set(ref(database, `users/${user.uid}`), {
                     email: user.email
-                });
+                })
+
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                return true;  
             }
         } catch (error : any) {
             switch (error.code) {
                 case "auth/email-already-in-use":
-                    alert("Email already in use");
+                    alert("Tento email je už používaný někým jiným.");
+                    break;
+                case "auth/invalid-email":
+                    alert("Špatně zadaný email. Email musí být v tomto formátu: jan@novotny.cz");
+                    break;
+                case "auth/weak-password":
+                    alert("Slabé heslo. Vyber si silnější heslo.");
+                    break;
+                case "auth/network-request-failed":
+                    alert("Chyba v síti. Prosím zkuste to znovu později.");
                     break;
                 default:
-                    alert("Unexpected error: " + error.message);
+                    alert("Nečekaný error :c : " + error.message);
             }
             return false;
         }

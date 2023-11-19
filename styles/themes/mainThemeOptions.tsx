@@ -82,6 +82,52 @@ const mainTheme: ThemeOptions = {
       paper: '#000000'
     }
   },
+  components: {
+    MuiButtonBase: {
+      styleOverrides: {
+        root: {
+          "&.Mui-checked": {
+            color: customColors.black + '!important',
+          },
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          '& fieldset': {
+            border: '1px solid black',
+          },
+          '& input:-webkit-autofill': {
+            '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
+            '-webkit-text-fill-color': customColors.black,
+          },
+          '&.Mui-focused' : {
+            borderColor: customColors.black + '!important',
+          }
+        },
+        notchedOutline: {
+          borderColor: customColors.black + '!important',
+        }
+      },
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focused' : {
+            color: customColors.black + '!important',
+          }
+        },
+      },
+    },
+    MuiPaper: { 
+      styleOverrides: {
+        root: {
+          color: customColors.white + '!important',
+        }
+      }
+    },
+  },
 };
 
 export default mainTheme;

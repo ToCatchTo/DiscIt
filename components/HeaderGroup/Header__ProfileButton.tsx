@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
-import { Menu, MenuItem, Avatar, Box, ThemeProvider } from '@mui/material';
+import { Menu, MenuItem, Avatar, Box, ThemeProvider, Typography } from '@mui/material';
 import mainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { authUtils } from '@/firebase/authUtils';
+import { useRouter } from 'next/router';
 
 export const HeaderProfileButton = () => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
   const handleClickOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const router = useRouter();
+  const currentUserEmail = localStorage.getItem('currentUserEmail');
 
   const hover = {
     "&:hover": {
@@ -29,6 +32,8 @@ export const HeaderProfileButton = () => {
 
   const handleLogout = () => {
     localStorage.setItem('loginState', 'false');
+    authUtils.logout();
+    router.push('/login');
   };
 
   return (
@@ -38,6 +43,9 @@ export const HeaderProfileButton = () => {
       </Button>
       <Box>
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose} sx={{ position: 'absolute'}}>
+          <MenuItem sx={{fontWeight: 'bold', borderBottom: '2px solid ' + customColors.white, padding: '6px 16px'}}>
+            <Typography sx={{}}>{currentUserEmail}</Typography>
+          </MenuItem>
           <MenuItem sx={{...hover}}>
             <Link style={{color: customColors.white, textDecoration: 'none'}} href={'#'}>Profile</Link>
           </MenuItem>

@@ -19,7 +19,7 @@ import { authUtils } from '@/firebase/authUtils';
 import mainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
 import { Header } from '@/components/HeaderGroup/Header';
 
-let loginResult: Boolean;
+let loginResult: boolean;
 loginResult = false;
 
 const Login: NextPage = () => {
@@ -33,6 +33,7 @@ const Login: NextPage = () => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     loginResult = await authUtils.login(email, password);
     localStorage.setItem('loginState', JSON.stringify(loginResult));
+    localStorage.setItem('currentUserEmail', JSON.stringify(email));
   };
 
   const buttonHover = {
@@ -54,7 +55,7 @@ const Login: NextPage = () => {
         <Container
           component="main"
           maxWidth="xs"
-          sx={{ pb: '2  5px', border: '2px solid black', borderRadius: '20px', mt: '10%'}}
+          sx={{ pb: '2  5px', border: '2px solid black', borderRadius: '20px', mt: '10%', bgcolor: customColors.white }}
         >
           <Box
             sx={{
@@ -77,18 +78,6 @@ const Login: NextPage = () => {
               sx={{ mt: 1 }}
             >
               <TextField
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    backgroundColor: customColors.white + '!important',
-                    '& fieldset': {
-                      border: '1px solid black',
-                    },
-                  },
-                  '& input:-webkit-autofill': {
-                    '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
-                    '-webkit-text-fill-color': customColors.black,
-                  },
-                }}
                 margin="normal"
                 required
                 fullWidth
@@ -104,16 +93,6 @@ const Login: NextPage = () => {
                 }}
               />
               <TextField
-                sx={{'& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    border: '1px solid black',
-                  },
-                },
-                '& css-4mhiq8:-webkit-autofill': {
-                  '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
-                  '-webkit-text-fill-color': customColors.black,
-                },
-              }}
                 margin="normal"
                 required
                 fullWidth
@@ -128,10 +107,6 @@ const Login: NextPage = () => {
                   setPassword(value);
                 }}
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="info" />}
-                label="Zapamatovat si mě"
-              />
               <Button
                 type="submit"
                 fullWidth
@@ -142,12 +117,12 @@ const Login: NextPage = () => {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link component={NextLink} href="#" variant="body2" sx={{color: customColors.black, textDecorationColor: customColors.black}}>
+                  <Link component={NextLink} href="/passwordReset" variant="body2" sx={{ color: customColors.black, textDecorationColor: customColors.black }}>
                     Zapomněli jste heslo?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link component={NextLink} href="/register" variant="body2" sx={{color: customColors.black, textDecorationColor: customColors.black}}>
+                  <Link component={NextLink} href="/register" variant="body2" sx={{ color: customColors.black, textDecorationColor: customColors.black }}>
                     Nemáte ještě už účet?
                   </Link>
                 </Grid>

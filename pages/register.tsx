@@ -8,7 +8,12 @@ import {
   Container,
   FormControlLabel,
   Grid,
+  InputLabel,
   Link,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
   TextField,
   Typography,
 } from '@mui/material';
@@ -20,16 +25,37 @@ import React, { useState } from 'react';
 import { authUtils } from '@/firebase/authUtils';
 import mainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
 import { Header } from '@/components/HeaderGroup/Header';
+import { useCreateUserMutationMutation } from '@/generated/graphql';
+import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 
-const Login: NextPage = () => {
+const Register: NextPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [createUser] = useCreateUserMutationMutation();
   const router = useRouter();
+  const firestore = getFirestore();
+  const usersRef = collection(firestore, 'users');
+
+  const isUsernameUsed = async (username: any) => {
+    const usernameQuery = query(usersRef, where("username", "==", username));
+    const querySnapshot = await getDocs(usernameQuery);
+    return querySnapshot; 
+  }
 
   const handleForm = async (event: any) => {
     event.preventDefault();
-    const registerResult = await authUtils.register(email, password);
-    console.log("výsledek: " + registerResult);
+    const usernameResult = await isUsernameUsed(username);
+    const userData = usernameResult.docs.map((doc) => doc.data());
+    const registerResult = await authUtils.register(email, password); 
+
+    if(registerResult && userData.length == 0) {
+      createUser({ variables: { email, username } });
+      router.push('/login');
+    }
+
+    if(userData.length > 0)
+      alert("Toto jméno je už používané. Zvolte si jiné.");
   };
 
   const buttonHover = {
@@ -41,7 +67,7 @@ const Login: NextPage = () => {
 
   return (
     <ThemeProvider theme={mainTheme}>
-    <Header></Header>
+      <Header></Header>
       <Box
         width="100vw"
         height="100vh"
@@ -51,7 +77,7 @@ const Login: NextPage = () => {
         <Container
           component="main"
           maxWidth="xs"
-          sx={{ pb: '2  5px', border: '2px solid black', borderRadius: '20px', mt: '10%'}}
+          sx={{ pb: '2  5px', border: '2px solid black', borderRadius: '20px', mt: '10%' }}
         >
           <Box
             sx={{
@@ -74,17 +100,20 @@ const Login: NextPage = () => {
               sx={{ mt: 1 }}
             >
               <TextField
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      border: '1px solid black',
-                    },
-                  },
-                  '& input:-webkit-autofill': {
-                    '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
-                    '-webkit-text-fill-color': customColors.black,
-                  },
+                margin="normal"
+                required
+                fullWidth
+                id="username"
+                label="Zadejte vaši přezdívku"
+                name="username"
+                autoFocus
+                color="info"
+                onChange={(e) => {
+                  const { value } = e.target;
+                  setUsername(value);
                 }}
+              />
+              <TextField
                 margin="normal"
                 required
                 fullWidth
@@ -100,17 +129,6 @@ const Login: NextPage = () => {
                 }}
               />
               <TextField
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      border: '1px solid black',
-                    },
-                  },
-                  '& input:-webkit-autofill': {
-                    '-webkit-box-shadow': '0 0 0 100px ' + customColors.white + ' inset',
-                    '-webkit-text-fill-color': customColors.black,
-                  },
-                }}
                 margin="normal"
                 required
                 fullWidth
@@ -125,10 +143,6 @@ const Login: NextPage = () => {
                   setPassword(value);
                 }}
               />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="info" />}
-                label="Zapamatovat si mě"
-              />
               <Button
                 type="submit"
                 fullWidth
@@ -139,7 +153,7 @@ const Login: NextPage = () => {
               </Button>
               <Grid container>
                 <Grid item>
-                  <Link component={NextLink} href="/login" variant="body2" sx={{color: customColors.black, textDecorationColor: customColors.black}}>
+                  <Link component={NextLink} href="/login" variant="body2" sx={{ color: customColors.black, textDecorationColor: customColors.black }}>
                     Už máte účet?
                   </Link>
                 </Grid>
@@ -152,4 +166,4 @@ const Login: NextPage = () => {
   );
 };
 
-export default Login;
+export default Register;

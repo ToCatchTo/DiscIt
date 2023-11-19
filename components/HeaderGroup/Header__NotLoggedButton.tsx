@@ -34,7 +34,7 @@ export const NotLoggedButton = () => {
         <Button sx={{ borderRadius: 3.5 }}>
             <Link href='/login' style={{textDecoration: 'none'}}>
                 <Typography sx={{color: customColors.white, fontSize: '22px', fontWeight: 'medium', ...underlineAnimation}} >
-                        VYTVOŘIT ÚČET
+                        PŘIHLÁSIT SE
                 </Typography>
             </Link>
         </Button>
