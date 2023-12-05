@@ -5,23 +5,23 @@ import { FC } from 'react';
 import mainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
 
 type Props = {
-  level: number;
   href: Array<string>;
   pageName: Array<string>;
+  black?: boolean;
 };
 
 export const BreadcrumbsNavigation: FC<Props> = (props) => {
-  const { level, href, pageName } = props;
+  const { href, pageName, black } = props;
 
   return (
     <Breadcrumbs
     separator=">"
     aria-label="breadcrumb"
-    sx={{ color: customColors.white}}
+    sx={{ color: black ? customColors.black : customColors.white }}
     >
     { pageName.map((pageName, i) => 
     <Typography>
-      <Link style={{textDecoration: 'none', color: customColors.white}} href={href[i]}>
+      <Link style={{textDecoration: 'none', color: black ? customColors.black : customColors.white }} href={href[i]}>
           {pageName}
       </Link>
     </Typography>)

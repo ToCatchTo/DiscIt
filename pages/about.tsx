@@ -18,7 +18,7 @@ const About: NextPage = () => {
   return (
     <Box>
       <Header></Header>
-      <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/targets-header.png'} />
+      <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/banner-background.jpg'} imgBg={true} />
       <Description></Description>
       <Footer/>
     </Box>

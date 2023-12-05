@@ -2,6 +2,7 @@ query UsersQuery {
     users {
         username
         email
+        friendList
     } 
 }
 
@@ -15,9 +16,14 @@ query PlaygroundsQuery {
     }
 }
 
-mutation CreateUserMutation($email: String!, $username: String!) {
-  createUser(email: $email, username: $username) {
+mutation CreateUserMutation($email: String!, $username: String!, $friendList: [String]) {
+  createUser(email: $email, username: $username, friendList: $friendList) {
     email
     username
+    friendList
   }
+}
+
+mutation AddFriend($currentUserId: String!, $targetEmail: String!) {
+  addFriend(currentUserId: $currentUserId, targetEmail: $targetEmail)
 }

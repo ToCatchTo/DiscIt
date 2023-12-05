@@ -11,17 +11,19 @@ type Props = {
     picturePath: string;
     title: string;
     perex: string;
+    imgBg: boolean;
   };
 
 export const Banner: FC<Props> = (props) => {
-    const { picturePath, level, href, pageName, title, perex } = props;
+    const { picturePath, href, pageName, title, perex, imgBg } = props;
 
     return(
-        <Box sx={{width: '100%', height: '100vh'}}>
+        imgBg ? 
+        <Box sx={{width: '100%', height: '100vh', overflow: 'hidden', position: 'relative'}}>
             <Box sx={{ zIndex: 0, mt: '100px', ml: '140px', position: 'absolute' }}>
-                <BreadcrumbsNavigation level={level} pageName={pageName} href={href} />
+                <BreadcrumbsNavigation pageName={pageName} href={href} />
             </Box>
-            <Box component='img' sx={{ width: '100%', height: '100%', zIndex: -1, position: 'absolute', left: 0}} alt='Banner obrázek' src={picturePath}>
+            <Box component='img' sx={{width: '100%', height: 'auto', zIndex: -1, position: 'absolute', left: 0, top: -200}} alt='Banner obrázek' src={picturePath}>
             </Box>
             <Box sx={{ pt: '35vh', display: 'flex', rowGap: '15px', pl: '140px', flexDirection: 'column'}}>
                 <Typography sx={{color: customColors.white, fontSize: '42px', fontWeight: 'bold'}}>
@@ -34,5 +36,18 @@ export const Banner: FC<Props> = (props) => {
                 </Typography>
             </Box>
         </Box>    
+            :
+        <Box>
+            <Box sx={{ zIndex: 0, mt: '100px', ml: '140px', position: 'absolute' }}>
+                <BreadcrumbsNavigation pageName={pageName} href={href} black={true}/>
+            </Box>
+            <Box sx={{ pt: '18vh', display: 'flex', rowGap: '15px', pl: '140px', flexDirection: 'column', pr: '140px'}}>
+                <Typography sx={{color: customColors.black, fontSize: '42px', fontWeight: 'bold'}}>
+                    {title}
+                </Typography>
+                <Box sx={{ height: '2px', width: '100%', backgroundColor: customColors.black }}>
+                </Box>
+            </Box>
+        </Box>
     );
 };

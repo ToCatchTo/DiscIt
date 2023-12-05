@@ -48,9 +48,9 @@ const Register: NextPage = () => {
     const usernameResult = await isUsernameUsed(username);
     const userData = usernameResult.docs.map((doc) => doc.data());
     const registerResult = await authUtils.register(email, password); 
-
+    const friendList: any = [];
     if(registerResult && userData.length == 0) {
-      createUser({ variables: { email, username } });
+      createUser({ variables: { email, username, friendList } });
       router.push('/login');
     }
 

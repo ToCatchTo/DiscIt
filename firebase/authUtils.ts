@@ -24,7 +24,7 @@ export const authUtils = {
                     alert("Uživatel nenalezen.");
                     break;
                 case "auth/wrong-password":
-                    alert("Nesprávné heslo.");
+                    alert("Nesprávné heslo nebo email. Zkuste zadat znovu.");
                     break;
                 case "auth/network-request-failed":
                     alert("Chyba v síti. Prosím zkuste to znovu později.");
@@ -52,7 +52,7 @@ export const authUtils = {
                     email: user.email
                 })
 
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                //await new Promise(resolve => setTimeout(resolve, 2000));
                 return true;  
             }
         } catch (error : any) {

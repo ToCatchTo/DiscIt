@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Menu, MenuItem, Avatar, Box, ThemeProvider, Typography } from '@mui/material';
 import mainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
 import Link from 'next/link';
@@ -6,10 +6,13 @@ import Button from '@mui/material/Button';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { authUtils } from '@/firebase/authUtils';
 import { useRouter } from 'next/router';
+import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 
 export const HeaderProfileButton = () => {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
+  const [username, setUsername] = useState();
+  
   const handleClickOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -17,7 +20,25 @@ export const HeaderProfileButton = () => {
     setAnchorEl(null);
   };
   const router = useRouter();
-  const currentUserEmail = localStorage.getItem('currentUserEmail');
+  let currentUserEmailDirty = localStorage.getItem('currentUserEmail');
+  const currentUserEmail = (currentUserEmailDirty ?? "").slice(1, -1);
+
+  const getCurrentUsername = async () => {
+    const firestore = getFirestore();
+    const usersRef = collection(firestore, 'users');
+    const queryResult = query(usersRef, where("email", "==", currentUserEmail));
+    const querySnapshot = await getDocs(queryResult);
+    const usernameResult = querySnapshot.docs.map((doc) => doc.data());
+    return usernameResult[0].username;
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+        const result = await getCurrentUsername();
+        setUsername(result);
+    };
+    fetchData();
+  });
 
   const hover = {
     "&:hover": {
@@ -42,18 +63,18 @@ export const HeaderProfileButton = () => {
         <AccountCircleIcon sx={{ height: '60px', width: '60px', color: customColors.white }} />
       </Button>
       <Box>
-        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose} sx={{ position: 'absolute'}}>
-          <MenuItem sx={{fontWeight: 'bold', borderBottom: '2px solid ' + customColors.white, padding: '6px 16px'}}>
-            <Typography sx={{}}>{currentUserEmail}</Typography>
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose} sx={{ position: 'absolute' }}>
+          <MenuItem sx={{ fontWeight: 'bold', borderBottom: '2px solid ' + customColors.white, padding: '6px 16px', pointerEvents: 'none' }}>
+            <Typography sx={{fontWeight: '550', fontSize: '17px'}}>{username}</Typography>
           </MenuItem>
-          <MenuItem sx={{...hover}}>
-            <Link style={{color: customColors.white, textDecoration: 'none'}} href={'#'}>Profile</Link>
+          <MenuItem sx={{ ...hover }}>
+            <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'#'}>Profile</Link>
           </MenuItem>
-          <MenuItem sx={{...hover}}>
-            <Link style={{color: customColors.white, textDecoration: 'none'}} href={'#'}>Settings</Link>
+          <MenuItem sx={{ ...hover }}>
+            <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'#'}>Settings</Link>
           </MenuItem>
-          <MenuItem sx={{...hover}}>
-            <Link style={{color: customColors.white, textDecoration: 'none'}} href={'/login'} onClick={handleLogout}>Logout</Link>
+          <MenuItem sx={{ ...hover }}>
+            <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'/login'} onClick={handleLogout}>Logout</Link>
           </MenuItem>
         </Menu>
       </Box>

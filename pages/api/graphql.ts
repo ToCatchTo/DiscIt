@@ -6,8 +6,18 @@ import { verifyToken } from '@/server/verifyToken';
 import { firestore } from 'firebase-admin';
 import { Playgrounds, User } from '@/generated/graphql';
 
+export interface Friend {
+  username: string
+  email: string
+}
+
+export interface friendRequest {
+  state: string
+  sender: string
+}
+
 type Context = {
-user?: DecodedIdToken | undefined;
+  user?: DecodedIdToken | undefined;
 };
 
 const typeDefs = gql`
@@ -16,11 +26,13 @@ type Query {
   playgrounds: [Playgrounds!]!
 }
 type Mutation {
-  createUser(username: String!, email: String!): User
+  createUser(username: String!, email: String!, friendList: [String]): User
+  addFriend(currentUserId: String!, targetEmail: String!): String
 }
 type User {
   email: String
   username: String
+  friendList: [String]
 }
 
 type Playgrounds {
@@ -36,10 +48,21 @@ const db = firestore();
 
 const resolvers = {
 Mutation: {
-  createUser: async (_: any, { email, username}: User, __: any) => {
+  createUser: async (_: any, { email, username, friendList}: User, __: any) => {
     const userRef = db.collection('users').doc();
-    const user = { email, username };
+    const user = { email, username, friendList };
     await userRef.set(user);
+    return "User created successfully."
+  },
+  addFriend: async (_: any, { currentUserId, targetEmail }: any, __: any) => {
+    const userRef = db.collection('users').doc(currentUserId);
+    const userDoc = await userRef.get();
+    const currentFriendList = userDoc.data()?.friendList || [];
+    currentFriendList.push(targetEmail);
+    await userRef.update({
+      friendList: currentFriendList,
+    });
+    return "Friend added successfully."; 
   },
 },
 Query: {
@@ -54,6 +77,7 @@ Query: {
       return docs.map((doc) => ({
         email: `${doc.email}`,
         username: `${doc.username}`,
+        friendlist: `${doc.friendList}`,
       }));
     },
     playgrounds: async () => {
