@@ -12,6 +12,8 @@ export const HeaderProfileButton = () => {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
   const [username, setUsername] = useState();
+  const firestore = getFirestore();
+  const usersRef = collection(firestore, 'users');
   
   const handleClickOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -24,8 +26,6 @@ export const HeaderProfileButton = () => {
   const currentUserEmail = (currentUserEmailDirty ?? "").slice(1, -1);
 
   const getCurrentUsername = async () => {
-    const firestore = getFirestore();
-    const usersRef = collection(firestore, 'users');
     const queryResult = query(usersRef, where("email", "==", currentUserEmail));
     const querySnapshot = await getDocs(queryResult);
     const usernameResult = querySnapshot.docs.map((doc) => doc.data());

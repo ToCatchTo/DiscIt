@@ -25,14 +25,23 @@ type Query {
   users: [User!]!
   playgrounds: [Playgrounds!]!
 }
+type FriendRequestType { 
+  state: String
+  sender: String
+}
+input FriendRequestInput {
+  state: String
+  sender: String
+}
 type Mutation {
-  createUser(username: String!, email: String!, friendList: [String]): User
+  createUser(username: String!, email: String!, friendList: [String], pendingRequests: [FriendRequestInput] ): User
   addFriend(currentUserId: String!, targetEmail: String!): String
 }
 type User {
   email: String
   username: String
   friendList: [String]
+  pendingRequests: [FriendRequestType]
 }
 
 type Playgrounds {
@@ -48,7 +57,7 @@ const db = firestore();
 
 const resolvers = {
 Mutation: {
-  createUser: async (_: any, { email, username, friendList}: User, __: any) => {
+  createUser: async (_: any, { email, username, friendList }: User, __: any) => {
     const userRef = db.collection('users').doc();
     const user = { email, username, friendList };
     await userRef.set(user);
@@ -117,7 +126,6 @@ export default createYoga({
   graphqlEndpoint: '/api/graphql',
   context: async (context) => {
     const auth = context.request.headers.get('authorization');
-    console.log(auth);
     return {
       user : auth
         ? await verifyToken(auth) : undefined

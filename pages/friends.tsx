@@ -8,10 +8,10 @@ import { NextPage } from 'next';
 import * as React from 'react';
 import { ZigZag } from '@/components/Zig-zag';
 import { Footer } from '@/components/Footer';
-import { DeleteFriendDocument, useAddFriendMutation, useDeleteFriendMutation, useUsersQueryQuery } from '@/generated/graphql';
+import { useAddFriendMutation, useUsersQueryQuery } from '@/generated/graphql';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { collection, doc, getDocs, getFirestore, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { CollectionReference, DocumentData, Firestore, collection, doc, getDocs, getFirestore, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { useState } from 'react';
 import { Friend, friendRequest } from './api/graphql';
 
@@ -29,10 +29,22 @@ const Friends: NextPage = () => {
     const [loadingFriends, setLoadingFriends] = useState(true);
     const [windowOpened, setWindowdOpen] = useState(false);
     let pageCount = friendList.length / 10 + 1;
+    const [textFieldValue, setTextFieldValue] = useState("");
+    let needToUpdateData = true;
+    let friends: Array<Friend> = [];
+    let usersRef: CollectionReference<DocumentData>;
+    let firestore: Firestore;
+
+    const handleTextFieldChange = (event: any) => {
+        setTextFieldValue(event.target.value);
+    };
+
+    const UpdateToCurrentData = () => {
+        const firestore = getFirestore();
+        usersRef = collection(firestore, 'users');
+    }
 
     const getFriends = async () => {
-        const firestore = getFirestore();
-        const usersRef = collection(firestore, 'users');
         let result = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
         let currentUserData = result.docs[0].data();
         const currentUserFriendList = currentUserData.friendList;
@@ -51,8 +63,11 @@ const Friends: NextPage = () => {
     };
 
     const fetchFriends = async () => {
-        const friends = await getFriends();
-        console.log(friends);
+        if(needToUpdateData) {
+            UpdateToCurrentData();
+            friends = await getFriends();
+            needToUpdateData = false;
+        }
         setFriendList(friends);
         setLoadingFriends(false);
     };
@@ -84,12 +99,11 @@ const Friends: NextPage = () => {
             friendList: emailList,
         });
 
+        needToUpdateData = true;
         await fetchFriends();
     }
 
     const sendFriendRequest = async (targetUsername: string) => {
-        const firestore = getFirestore();
-        const usersRef = collection(firestore, 'users');
         let result = await getDocs(query(usersRef, where("username", "==", targetUsername)));
         if(result.docs.length > 0) {
             let userId: string = result.docs[0].id;
@@ -97,10 +111,11 @@ const Friends: NextPage = () => {
             friendRequest.sender = userId;
             friendRequest.state = "pending";
 
-            await updateDoc(doc(firestore, 'users', result.docs[0].id), {
+            await updateDoc(doc(firestore, 'users', userId), {
                 pendingRequests: friendRequest,
             });
-
+            
+            needToUpdateData = true;
             await fetchFriends();
         }
         else {
@@ -136,7 +151,7 @@ const Friends: NextPage = () => {
             <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/banner-background.jpg'} imgBg={false} />
             <Box sx={{ display: "flex", margin: '0px 140px', flexWrap: 'wrap', columnGap: '1%', rowGap: '15px', mt: '30px' }}>
                 {loadingFriends ? (
-                    <Typography>Loading friends...</Typography>
+                    <Typography>Načítání přátel...</Typography>
                 ) : (
                     friendList.map((item: any, index: any) => (
                         item.email !== currentUserEmail ? (
@@ -161,8 +176,8 @@ const Friends: NextPage = () => {
                 <Dialog open={windowOpened} onClose={handleWindowAppear} fullWidth={true} maxWidth={'md'} PaperProps={{ sx: { borderRadius: '10px' } }} >
                     <Box sx={{ height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px' }}>
                         <Typography sx={{ color: customColors.black, fontSize: '23px', fontWeight: 'bold' }}>Přidat přítele</Typography>
-                        <TextField sx={{ backgroundColor: customColors.white, borderRadius: '4px' }} variant="outlined" label="Zadejte jméno uživatele" />
-                        <Button sx={{ backgroundColor: customColors.black, color: customColors.white, ...sendRequestBtn }} >Poslat žádost</Button>
+                        <TextField sx={{ backgroundColor: customColors.white, borderRadius: '4px' }} variant="outlined" label="Zadejte jméno uživatele" value={textFieldValue} onChange={handleTextFieldChange} />
+                        <Button sx={{ backgroundColor: customColors.black, color: customColors.white, ...sendRequestBtn }} onClick={() => sendFriendRequest(textFieldValue)} >Poslat žádost</Button>
                     </Box>
                 </Dialog>
             </Box>
