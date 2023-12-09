@@ -6,14 +6,15 @@ import Button from '@mui/material/Button';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { authUtils } from '@/firebase/authUtils';
 import { useRouter } from 'next/router';
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import { QuerySnapshot, collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 
 export const HeaderProfileButton = () => {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLButtonElement>(null);
-  const [username, setUsername] = useState();
+  const [username, setUsername] = useState("");
   const firestore = getFirestore();
   const usersRef = collection(firestore, 'users');
+  let isLoaded = false;
   
   const handleClickOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -21,24 +22,30 @@ export const HeaderProfileButton = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  
   const router = useRouter();
   let currentUserEmailDirty = localStorage.getItem('currentUserEmail');
   const currentUserEmail = (currentUserEmailDirty ?? "").slice(1, -1);
 
   const getCurrentUsername = async () => {
+    const firestore = getFirestore();
+    const usersRef = collection(firestore, 'users');
     const queryResult = query(usersRef, where("email", "==", currentUserEmail));
     const querySnapshot = await getDocs(queryResult);
     const usernameResult = querySnapshot.docs.map((doc) => doc.data());
-    return usernameResult[0].username;
+    setUsername(usernameResult[0].username);
   }
 
   useEffect(() => {
-    const fetchData = async () => {
-        const result = await getCurrentUsername();
-        setUsername(result);
-    };
-    fetchData();
-  });
+    if (isLoaded == false) {
+        const intervalId = setInterval(() => {
+            getCurrentUsername();
+        }, 2000);
+
+        return () => clearInterval(intervalId);
+    }
+
+}, [username]);
 
   const hover = {
     "&:hover": {
