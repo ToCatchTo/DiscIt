@@ -75,13 +75,13 @@ export const HeaderProfileButton = () => {
             <Typography sx={{fontWeight: '550', fontSize: '17px'}}>{username}</Typography>
           </MenuItem>
           <MenuItem sx={{ ...hover }}>
-            <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'#'}>Profile</Link>
+            <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'/profileDetail'}>Profil</Link>
           </MenuItem>
           <MenuItem sx={{ ...hover }}>
-            <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'#'}>Settings</Link>
+            <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'#'}>Nastavení</Link>
           </MenuItem>
           <MenuItem sx={{ ...hover }}>
-            <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'/login'} onClick={handleLogout}>Logout</Link>
+            <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'/login'} onClick={handleLogout}>Odhlásit se</Link>
           </MenuItem>
         </Menu>
       </Box>

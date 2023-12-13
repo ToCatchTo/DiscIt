@@ -16,6 +16,11 @@ export interface friendRequest {
   sender: string
 }
 
+export interface SavedGame {
+  name: string
+  date: string
+}
+
 type Context = {
   user?: DecodedIdToken | undefined;
 };
@@ -33,15 +38,31 @@ input FriendRequestInput {
   state: String
   sender: String
 }
+type SavedGameType { 
+  name: String
+  date: String
+}
+input SavedGameInput {
+  name: String
+  date: String
+}
+type FriendType { 
+  username: String
+  email: String
+}
+input FriendInput {
+  username: String
+  email: String
+}
 type Mutation {
-  createUser(username: String!, email: String!, friendList: [String], pendingRequests: [FriendRequestInput] ): User
-  addFriend(currentUserId: String!, targetEmail: String!): String
+  createUser(username: String!, email: String!, friendList: [FriendInput], pendingRequests: [FriendRequestInput], gamesSaved: [SavedGameInput] ): User
 }
 type User {
   email: String
   username: String
-  friendList: [String]
+  friendList: [FriendType]
   pendingRequests: [FriendRequestType]
+  gamesSaved: [SavedGameType]
 }
 
 type Playgrounds {
@@ -57,21 +78,11 @@ const db = firestore();
 
 const resolvers = {
 Mutation: {
-  createUser: async (_: any, { email, username, friendList }: User, __: any) => {
+  createUser: async (_: any, { email, username, friendList, pendingRequests, gamesSaved }: User, __: any) => {
     const userRef = db.collection('users').doc();
-    const user = { email, username, friendList };
+    const user = { email, username, friendList, pendingRequests, gamesSaved };
     await userRef.set(user);
     return "User created successfully."
-  },
-  addFriend: async (_: any, { currentUserId, targetEmail }: any, __: any) => {
-    const userRef = db.collection('users').doc(currentUserId);
-    const userDoc = await userRef.get();
-    const currentFriendList = userDoc.data()?.friendList || [];
-    currentFriendList.push(targetEmail);
-    await userRef.update({
-      friendList: currentFriendList,
-    });
-    return "Friend added successfully."; 
   },
 },
 Query: {
@@ -87,6 +98,8 @@ Query: {
         email: `${doc.email}`,
         username: `${doc.username}`,
         friendlist: `${doc.friendList}`,
+        pendingRequests: `${doc.pendingRequests}`,
+        gamesSaved: `${doc.gamesSaved}`,
       }));
     },
     playgrounds: async () => {

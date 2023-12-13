@@ -19,7 +19,7 @@ export const HeaderButtonList = () => {
                     <HeaderButton href='/mapPage' title='Hřiště'/>
                 </Box>
                 <Box sx={{}}>
-                    { isLoggedIn ? <HeaderButton href='#' title='Záznamy'/> : <Box></Box>}
+                    { isLoggedIn ? <HeaderButton href='/gamesList' title='Záznamy'/> : <Box></Box>}
                 </Box>
                 <Box sx={{}}>
                     { isLoggedIn ? <HeaderButton href='/friends' title='Přátelé'/> : <Box></Box>}

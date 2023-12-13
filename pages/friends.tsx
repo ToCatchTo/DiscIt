@@ -8,7 +8,7 @@ import { NextPage } from 'next';
 import * as React from 'react';
 import { ZigZag } from '@/components/Zig-zag';
 import { Footer } from '@/components/Footer';
-import { useAddFriendMutation, useUsersQueryQuery } from '@/generated/graphql';
+import { useUsersQueryQuery } from '@/generated/graphql';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { CollectionReference, DocumentData, Firestore, collection, doc, getDocs, getFirestore, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
@@ -29,11 +29,12 @@ const Friends: NextPage = () => {
     const [loadingFriends, setLoadingFriends] = useState(true);
     const [addFriendWindowOpened, setWindowdOpen] = useState(false);
     const [requestsWindowOpened, setWindowOpen] = useState(false);
-    let pageCount = friendList.length / 10 + 1;
+    let pageCount = Math.floor(friendList.length / 10 + 1);
     const [textFieldValue, setTextFieldValue] = useState("");
     let friends: Array<Friend> = [];
     const [needToUpdate, setNeedToUpdate] = useState(true);
     const [dataUpdate, setDataUpdate] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
     let requests: Array<friendRequest> = [];
     let usersRef: CollectionReference<DocumentData>;
 
@@ -51,13 +52,12 @@ const Friends: NextPage = () => {
 
         let newFriendList: Array<Friend> = [];
 
-        if(dataUpdate) {
+        if (dataUpdate) {
             newFriendList = friendList;
             currentUserRequestList = requestList;
             setDataUpdate(false);
         }
-        else
-        {
+        else {
             for (const item of currentUserFriendList) {
                 result = await getDocs(query(usersRef, where("email", "==", item.email)));
                 newFriendList.push({
@@ -73,6 +73,7 @@ const Friends: NextPage = () => {
     useEffect(() => {
         const fetchFriends = async () => {
             if (needToUpdate) {
+                console.log("Fetching...");
                 friends = (await getFriends()).newFriendList;
                 requests = (await getFriends()).currentUserRequestList;
                 setNeedToUpdate(false);
@@ -84,11 +85,11 @@ const Friends: NextPage = () => {
 
         const intervalId = setInterval(() => {
             fetchFriends();
-        }, 2000);
+        }, 1000);
 
         return () => clearInterval(intervalId);
 
-    }, [needToUpdate]);
+    }, [needToUpdate, currentPage]);
 
     const handleDelete = async (targetUserEmail: any, currentUserEmail: any) => {
         let indexOfDelete = 0;
@@ -104,16 +105,10 @@ const Friends: NextPage = () => {
 
         friendList.splice(indexOfDelete, 1);
 
-        let emailList: string[] = [];
-        friendList.forEach((item) => {
-            emailList.push(item.email);
-        });
-
         await updateDoc(doc(firestore, 'users', result.docs[0].id), {
-            friendList: emailList,
+            friendList: friendList,
         });
 
-        setFriendList(friendList);
         setNeedToUpdate(true);
     }
 
@@ -167,10 +162,11 @@ const Friends: NextPage = () => {
         let senderEmail: any = [];
         let senderUsername: any = [];
         let currentUserId = "";
+
         (await getDocs(query(usersRef))).docs.forEach((user) => {
-            if(user.data().email == currentUserEmail) {
+            if (user.data().email == currentUserEmail) {
                 currentUserId = user.id;
-            } 
+            }
             if (user.id == sender) {
                 senderEmail = user.data().email;
                 senderUsername = user.data().username;
@@ -182,16 +178,22 @@ const Friends: NextPage = () => {
         newRequestList.splice(index, 1);
 
         if (isAccepted) {
-            newFriendList.push({email: senderEmail, username: senderUsername});
+            newFriendList.push({ email: senderEmail, username: senderUsername });
             setFriendList(newFriendList);
             setRequestList(newRequestList);
+
+            let senderFriendList = (await getDocs(query(usersRef, where("email", "==", senderEmail)))).docs[0].data().friendList;
+            let currentUsername = (await getDocs(query(usersRef, where("email", "==", currentUserEmail)))).docs[0].data().username;
+
+            senderFriendList.push({ email: currentUserEmail, username: currentUsername });
+
+            await updateDoc(doc(firestore, 'users', sender), {
+                friendList: senderFriendList
+            });
         }
         else {
             setRequestList(newRequestList);
         }
-
-        console.log(newRequestList);
-        console.log(newFriendList);
 
         await updateDoc(doc(firestore, 'users', currentUserId), {
             pendingRequests: newRequestList,
@@ -215,6 +217,10 @@ const Friends: NextPage = () => {
         },
     };
 
+    let testarray: any = [];
+    testarray = friendList;
+    console.log(testarray.slice(0, 1));
+
     return (
         <Box>
             <Header></Header>
@@ -225,15 +231,18 @@ const Friends: NextPage = () => {
                     <Box sx={{ height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px' }}>
                         <Typography sx={{ color: customColors.black, fontSize: '23px', fontWeight: 'bold' }}>Žádosti o přátelství</Typography>
                         <Box sx={{ display: 'flex', width: '100%', gap: '10px', flexDirection: 'column' }}>
-                            {requestList.map((item: any, index: any) => (
-                                <Box key={index} sx={{ display: 'flex', flexWrap: 'nowrap', backgroundColor: customColors.black, alignItems: 'center', borderRadius: '10px', padding: '10px', width: '100%', justifyContent: 'space-between' }}>
-                                    <Typography><b>Žádost od:</b> {item.sender}</Typography>
-                                    <Box sx={{ display: 'flex', gap: '30px' }}>
-                                        <Button sx={{ backgroundColor: 'green', color: customColors.black, ...openDialongBtn }} onClick={() => handleRequest(index, true)}>Přijmout</Button>
-                                        <Button sx={{ backgroundColor: 'red', color: customColors.black, ...openDialongBtn }} onClick={() => handleRequest(index, false)}>Odmítnout</Button>
+                            {requestList.length == 0 ? (
+                                <Typography sx={{ color: customColors.black }}>Nemáš žádné žádosti</Typography>
+                            ) : (
+                                requestList.map((item: any, index: any) => (
+                                    <Box key={index} sx={{ display: 'flex', flexWrap: 'nowrap', backgroundColor: customColors.black, alignItems: 'center', borderRadius: '10px', padding: '10px', width: '100%', justifyContent: 'space-between' }}>
+                                        <Typography><b>Žádost od:</b> {item.sender}</Typography>
+                                        <Box sx={{ display: 'flex', gap: '30px' }}>
+                                            <Button sx={{ backgroundColor: 'green', color: customColors.black, ...openDialongBtn }} onClick={() => handleRequest(index, true)}>Přijmout</Button>
+                                            <Button sx={{ backgroundColor: 'red', color: customColors.black, ...openDialongBtn }} onClick={() => handleRequest(index, false)}>Odmítnout</Button>
+                                        </Box>
                                     </Box>
-                                </Box>
-                            ))}
+                                )))}
                         </Box>
                     </Box>
                 </Dialog>
@@ -242,23 +251,26 @@ const Friends: NextPage = () => {
                 {loadingFriends ? (
                     <Typography>Načítání přátel...</Typography>
                 ) : (
-                    friendList.map((item: any, index: any) => (
-                        item.email !== currentUserEmail ? (
-                            <Box key={index} sx={{ width: '49.5%', height: '70px', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <Typography sx={{ color: customColors.white, fontSize: '25px', fontWeight: '500' }}>{item.username}</Typography>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                                    <AccountCircleIcon sx={{ height: '60px', width: '60px', color: customColors.white }} />
-                                    <DeleteIcon onClick={() => handleDelete(item.email, currentUserEmail)} sx={{ height: '45px', width: '45px', color: customColors.white, cursor: 'pointer' }} />
+                    friendList.length == 0 ? (
+                        <Typography sx={{ color: customColors.black }}>Nemáš žádné přátele</Typography>
+                    ) : (
+                        friendList.slice((currentPage - 1) * 10, 10 * currentPage).map((item: any, index: any) => (
+                            item.email !== currentUserEmail ? (
+                                <Box key={index} sx={{ width: '49.5%', height: '70px', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <Typography sx={{ color: customColors.white, fontSize: '25px', fontWeight: '500' }}>{item.username}</Typography>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                                        <AccountCircleIcon sx={{ height: '60px', width: '60px', color: customColors.white }} />
+                                        <DeleteIcon onClick={() => handleDelete(item.email, currentUserEmail)} sx={{ height: '45px', width: '45px', color: customColors.white, cursor: 'pointer' }} />
+                                    </Box>
                                 </Box>
-                            </Box>
-                        ) : (
-                            <Box key={item.email} sx={{ display: 'none' }}></Box>
-                        )
-                    ))
+                            ) : (
+                                <Box key={item.email} sx={{ display: 'none' }}></Box>
+                            )
+                        )))
                 )}
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', margin: '0px 140px', mt: '20px' }}>
-                <Pagination count={pageCount} />
+                <Pagination count={pageCount} page={currentPage} onChange={(event, page) => setCurrentPage(page)} />
                 <Button sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '10px', borderRadius: '10px', ...openDialongBtn }} onClick={handleAddFriendWindowAppear}>Přidat přítele</Button>
                 <Dialog key={1} open={addFriendWindowOpened} onClose={handleAddFriendWindowAppear} fullWidth={true} maxWidth={'md'} PaperProps={{ sx: { borderRadius: '10px' } }} >
                     <Box sx={{ height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px' }}>
@@ -268,7 +280,7 @@ const Friends: NextPage = () => {
                     </Box>
                 </Dialog>
             </Box>
-            <Box sx={{ position: 'absolute', bottom: '0', width: '100%' }}>
+            <Box sx={{ width: '100%', pt: '30px' }}>
                 <Footer />
             </Box>
         </Box>

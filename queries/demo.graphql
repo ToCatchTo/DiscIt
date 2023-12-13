@@ -2,8 +2,18 @@ query UsersQuery {
     users {
         username
         email
-        friendList
-        # pendingRequests
+        friendList {
+          email
+          username
+        }
+        pendingRequests {
+          state
+          sender
+        }
+        gamesSaved {
+          name
+          date
+        }
     } 
 }
 
@@ -17,18 +27,21 @@ query PlaygroundsQuery {
     }
 }
 
-mutation CreateUserMutation($email: String!, $username: String!, $friendList: [String], $pendingRequests: [FriendRequestInput]) {
-  createUser(email: $email, username: $username, friendList: $friendList, pendingRequests: $pendingRequests) {
+mutation CreateUserMutation($email: String!, $username: String!, $friendList: [FriendInput], $pendingRequests: [FriendRequestInput], $gamesSaved: [SavedGameInput]) {
+  createUser(email: $email, username: $username, friendList: $friendList, pendingRequests: $pendingRequests, gamesSaved: $gamesSaved) {
     email
     username
-    friendList
+    friendList {
+      email
+      username
+    }
     pendingRequests {
       state
       sender
     }
+    gamesSaved {
+      name
+      date
+    }
   }
-}
-
-mutation AddFriend($currentUserId: String!, $targetEmail: String!) {
-  addFriend(currentUserId: $currentUserId, targetEmail: $targetEmail)
 }

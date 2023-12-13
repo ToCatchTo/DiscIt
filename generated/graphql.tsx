@@ -15,6 +15,11 @@ export type Scalars = {
   Float: number;
 };
 
+export type FriendInput = {
+  email?: InputMaybe<Scalars['String']>;
+  username?: InputMaybe<Scalars['String']>;
+};
+
 export type FriendRequestInput = {
   sender?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
@@ -26,22 +31,22 @@ export type FriendRequestType = {
   state?: Maybe<Scalars['String']>;
 };
 
-export type Mutation = {
-  __typename?: 'Mutation';
-  addFriend?: Maybe<Scalars['String']>;
-  createUser?: Maybe<User>;
+export type FriendType = {
+  __typename?: 'FriendType';
+  email?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
 };
 
-
-export type MutationAddFriendArgs = {
-  currentUserId: Scalars['String'];
-  targetEmail: Scalars['String'];
+export type Mutation = {
+  __typename?: 'Mutation';
+  createUser?: Maybe<User>;
 };
 
 
 export type MutationCreateUserArgs = {
   email: Scalars['String'];
-  friendList?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  friendList?: InputMaybe<Array<InputMaybe<FriendInput>>>;
+  gamesSaved?: InputMaybe<Array<InputMaybe<SavedGameInput>>>;
   pendingRequests?: InputMaybe<Array<InputMaybe<FriendRequestInput>>>;
   username: Scalars['String'];
 };
@@ -61,10 +66,22 @@ export type Query = {
   users: Array<User>;
 };
 
+export type SavedGameInput = {
+  date?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
+export type SavedGameType = {
+  __typename?: 'SavedGameType';
+  date?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+};
+
 export type User = {
   __typename?: 'User';
   email?: Maybe<Scalars['String']>;
-  friendList?: Maybe<Array<Maybe<Scalars['String']>>>;
+  friendList?: Maybe<Array<Maybe<FriendType>>>;
+  gamesSaved?: Maybe<Array<Maybe<SavedGameType>>>;
   pendingRequests?: Maybe<Array<Maybe<FriendRequestType>>>;
   username?: Maybe<Scalars['String']>;
 };
@@ -72,7 +89,7 @@ export type User = {
 export type UsersQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UsersQueryQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', username?: string | null, email?: string | null, friendList?: Array<string | null> | null }> };
+export type UsersQueryQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', username?: string | null, email?: string | null, friendList?: Array<{ __typename?: 'FriendType', email?: string | null, username?: string | null } | null> | null, pendingRequests?: Array<{ __typename?: 'FriendRequestType', state?: string | null, sender?: string | null } | null> | null, gamesSaved?: Array<{ __typename?: 'SavedGameType', name?: string | null, date?: string | null } | null> | null }> };
 
 export type PlaygroundsQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -82,20 +99,13 @@ export type PlaygroundsQueryQuery = { __typename?: 'Query', playgrounds: Array<{
 export type CreateUserMutationMutationVariables = Exact<{
   email: Scalars['String'];
   username: Scalars['String'];
-  friendList?: InputMaybe<Array<InputMaybe<Scalars['String']>> | InputMaybe<Scalars['String']>>;
+  friendList?: InputMaybe<Array<InputMaybe<FriendInput>> | InputMaybe<FriendInput>>;
   pendingRequests?: InputMaybe<Array<InputMaybe<FriendRequestInput>> | InputMaybe<FriendRequestInput>>;
+  gamesSaved?: InputMaybe<Array<InputMaybe<SavedGameInput>> | InputMaybe<SavedGameInput>>;
 }>;
 
 
-export type CreateUserMutationMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', email?: string | null, username?: string | null, friendList?: Array<string | null> | null, pendingRequests?: Array<{ __typename?: 'FriendRequestType', state?: string | null, sender?: string | null } | null> | null } | null };
-
-export type AddFriendMutationVariables = Exact<{
-  currentUserId: Scalars['String'];
-  targetEmail: Scalars['String'];
-}>;
-
-
-export type AddFriendMutation = { __typename?: 'Mutation', addFriend?: string | null };
+export type CreateUserMutationMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', email?: string | null, username?: string | null, friendList?: Array<{ __typename?: 'FriendType', email?: string | null, username?: string | null } | null> | null, pendingRequests?: Array<{ __typename?: 'FriendRequestType', state?: string | null, sender?: string | null } | null> | null, gamesSaved?: Array<{ __typename?: 'SavedGameType', name?: string | null, date?: string | null } | null> | null } | null };
 
 
 export const UsersQueryDocument = gql`
@@ -103,7 +113,18 @@ export const UsersQueryDocument = gql`
   users {
     username
     email
-    friendList
+    friendList {
+      email
+      username
+    }
+    pendingRequests {
+      state
+      sender
+    }
+    gamesSaved {
+      name
+      date
+    }
   }
 }
     `;
@@ -173,19 +194,27 @@ export type PlaygroundsQueryQueryHookResult = ReturnType<typeof usePlaygroundsQu
 export type PlaygroundsQueryLazyQueryHookResult = ReturnType<typeof usePlaygroundsQueryLazyQuery>;
 export type PlaygroundsQueryQueryResult = Apollo.QueryResult<PlaygroundsQueryQuery, PlaygroundsQueryQueryVariables>;
 export const CreateUserMutationDocument = gql`
-    mutation CreateUserMutation($email: String!, $username: String!, $friendList: [String], $pendingRequests: [FriendRequestInput]) {
+    mutation CreateUserMutation($email: String!, $username: String!, $friendList: [FriendInput], $pendingRequests: [FriendRequestInput], $gamesSaved: [SavedGameInput]) {
   createUser(
     email: $email
     username: $username
     friendList: $friendList
     pendingRequests: $pendingRequests
+    gamesSaved: $gamesSaved
   ) {
     email
     username
-    friendList
+    friendList {
+      email
+      username
+    }
     pendingRequests {
       state
       sender
+    }
+    gamesSaved {
+      name
+      date
     }
   }
 }
@@ -209,6 +238,7 @@ export type CreateUserMutationMutationFn = Apollo.MutationFunction<CreateUserMut
  *      username: // value for 'username'
  *      friendList: // value for 'friendList'
  *      pendingRequests: // value for 'pendingRequests'
+ *      gamesSaved: // value for 'gamesSaved'
  *   },
  * });
  */
@@ -219,35 +249,3 @@ export function useCreateUserMutationMutation(baseOptions?: Apollo.MutationHookO
 export type CreateUserMutationMutationHookResult = ReturnType<typeof useCreateUserMutationMutation>;
 export type CreateUserMutationMutationResult = Apollo.MutationResult<CreateUserMutationMutation>;
 export type CreateUserMutationMutationOptions = Apollo.BaseMutationOptions<CreateUserMutationMutation, CreateUserMutationMutationVariables>;
-export const AddFriendDocument = gql`
-    mutation AddFriend($currentUserId: String!, $targetEmail: String!) {
-  addFriend(currentUserId: $currentUserId, targetEmail: $targetEmail)
-}
-    `;
-export type AddFriendMutationFn = Apollo.MutationFunction<AddFriendMutation, AddFriendMutationVariables>;
-
-/**
- * __useAddFriendMutation__
- *
- * To run a mutation, you first call `useAddFriendMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddFriendMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addFriendMutation, { data, loading, error }] = useAddFriendMutation({
- *   variables: {
- *      currentUserId: // value for 'currentUserId'
- *      targetEmail: // value for 'targetEmail'
- *   },
- * });
- */
-export function useAddFriendMutation(baseOptions?: Apollo.MutationHookOptions<AddFriendMutation, AddFriendMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddFriendMutation, AddFriendMutationVariables>(AddFriendDocument, options);
-      }
-export type AddFriendMutationHookResult = ReturnType<typeof useAddFriendMutation>;
-export type AddFriendMutationResult = Apollo.MutationResult<AddFriendMutation>;
-export type AddFriendMutationOptions = Apollo.BaseMutationOptions<AddFriendMutation, AddFriendMutationVariables>;
