@@ -49,8 +49,10 @@ const Register: NextPage = () => {
     const userData = usernameResult.docs.map((doc) => doc.data());
     const registerResult = await authUtils.register(email, password); 
     const friendList: any = [];
+    const pendingRequests: any = [];
+    const gamesSaved: any = [];
     if(registerResult && userData.length == 0) {
-      createUser({ variables: { email, username, friendList } });
+      createUser({ variables: { email, username, friendList, pendingRequests, gamesSaved } });
       router.push('/login');
     }
 

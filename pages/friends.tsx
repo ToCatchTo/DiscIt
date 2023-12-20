@@ -1,6 +1,6 @@
 import { Header } from '@/components/HeaderGroup/Header';
 import { Banner } from '@/components/Banner';
-import MainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
+import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
 import { Box, Button, Dialog, DialogTitle, Pagination, TextField, ThemeProvider, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -29,7 +29,7 @@ const Friends: NextPage = () => {
     const [loadingFriends, setLoadingFriends] = useState(true);
     const [addFriendWindowOpened, setWindowdOpen] = useState(false);
     const [requestsWindowOpened, setWindowOpen] = useState(false);
-    let pageCount = Math.floor(friendList.length / 10 + 1);
+    let pageCount = Math.floor(friendList.length / 6 + 1);
     const [textFieldValue, setTextFieldValue] = useState("");
     let friends: Array<Friend> = [];
     const [needToUpdate, setNeedToUpdate] = useState(true);
@@ -225,7 +225,7 @@ const Friends: NextPage = () => {
         <Box>
             <Header></Header>
             <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/banner-background.jpg'} imgBg={false} />
-            <Box sx={{ display: 'flex', margin: '0px 140px', mt: '30px' }}>
+            <Box sx={{ display: 'flex', margin: generalVariables.contentPadding, mt: '30px' }}>
                 <Button sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '10px', borderRadius: '10px', ...openDialongBtn }} onClick={handleRequestsWindowAppear}>Žádosti o přátelství</Button>
                 <Dialog key={0} open={requestsWindowOpened} onClose={handleRequestsWindowAppear} fullWidth={true} maxWidth={'md'} PaperProps={{ sx: { borderRadius: '10px' } }} >
                     <Box sx={{ height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px' }}>
@@ -247,14 +247,14 @@ const Friends: NextPage = () => {
                     </Box>
                 </Dialog>
             </Box>
-            <Box sx={{ display: "flex", margin: '0px 140px', flexWrap: 'wrap', columnGap: '1%', rowGap: '15px', mt: '30px' }}>
+            <Box sx={{ display: "flex", margin: generalVariables.contentPadding, flexWrap: 'wrap', columnGap: '1%', rowGap: '15px', mt: '30px' }}>
                 {loadingFriends ? (
                     <Typography>Načítání přátel...</Typography>
                 ) : (
                     friendList.length == 0 ? (
                         <Typography sx={{ color: customColors.black }}>Nemáš žádné přátele</Typography>
                     ) : (
-                        friendList.slice((currentPage - 1) * 10, 10 * currentPage).map((item: any, index: any) => (
+                        friendList.slice((currentPage - 1) * 6, 6 * currentPage).map((item: any, index: any) => (
                             item.email !== currentUserEmail ? (
                                 <Box key={index} sx={{ width: '49.5%', height: '70px', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <Typography sx={{ color: customColors.white, fontSize: '25px', fontWeight: '500' }}>{item.username}</Typography>
@@ -269,7 +269,7 @@ const Friends: NextPage = () => {
                         )))
                 )}
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', margin: '0px 140px', mt: '20px' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', margin: generalVariables.contentPadding, mt: '20px' }}>
                 <Pagination count={pageCount} page={currentPage} onChange={(event, page) => setCurrentPage(page)} />
                 <Button sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '10px', borderRadius: '10px', ...openDialongBtn }} onClick={handleAddFriendWindowAppear}>Přidat přítele</Button>
                 <Dialog key={1} open={addFriendWindowOpened} onClose={handleAddFriendWindowAppear} fullWidth={true} maxWidth={'md'} PaperProps={{ sx: { borderRadius: '10px' } }} >
@@ -280,7 +280,7 @@ const Friends: NextPage = () => {
                     </Box>
                 </Dialog>
             </Box>
-            <Box sx={{ width: '100%', pt: '30px' }}>
+            <Box sx={{ width: '100%', pt: '30px', position: 'absolute', bottom: '0px' }}>
                 <Footer />
             </Box>
         </Box>

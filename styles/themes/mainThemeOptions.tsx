@@ -21,7 +21,7 @@ export const customColors = {
   error: '#F84F31',
   success: '#23C552',
   text: '#D1E8E2',
-  darkBackground: '#2C3531',
+  darkBackground: '#0b0e0d',
   lightBackground: '#E4E4E4'
 }
 
@@ -34,7 +34,7 @@ export const breakpoints = {
 }
 
 export const generalVariables = {
-  contentPadding: '0px 140px'
+  contentPadding: '0px 13%',
 }
 
 const mainTheme: ThemeOptions = {

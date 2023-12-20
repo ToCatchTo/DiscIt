@@ -1,6 +1,6 @@
 import { Header } from '@/components/HeaderGroup/Header';
 import { Banner } from '@/components/Banner';
-import MainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
+import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
 import { Box, Button, Dialog, DialogTitle, Pagination, TextField, ThemeProvider, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -55,7 +55,7 @@ const Friends: NextPage = () => {
         <Box>
             <Header></Header>
             <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/banner-background.jpg'} imgBg={false} />
-            <Box sx={{ display: 'flex', margin: '0px 140px', mt: '30px' }}>
+            <Box sx={{ display: 'flex', margin: generalVariables.contentPadding, mt: '30px' }}>
                 <AccountCircleIcon sx={{ height: '200px', width: '250px' }} />
                 <Box sx={{width: '3px', height: '200px', backgroundColor: customColors.black, mr: '40px'}}></Box>
                 <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>

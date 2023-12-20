@@ -1,6 +1,6 @@
 import { Header } from '@/components/HeaderGroup/Header';
 import { Banner } from '@/components/Banner';
-import MainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
+import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
 import { Box, Button, Dialog, DialogTitle, Pagination, TextField, ThemeProvider, Typography } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -29,7 +29,7 @@ const GamesList: NextPage = () => {
     const [gamesList, setGamesList] = useState<Array<SavedGame>>([]);
     const [currentPage, setCurrentPage] = useState(1);
     let savedGames: Array<SavedGame> = [];
-    let pageCount = Math.floor(gamesList.length / 10 + 1);
+    let pageCount = Math.floor(gamesList.length / 6 + 1);
     
 
     const getData = async () => {
@@ -77,7 +77,7 @@ const GamesList: NextPage = () => {
         <Box>
             <Header></Header>
             <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/banner-background.jpg'} imgBg={false} />
-            <Box sx={{ display: 'flex', margin: '0px 140px', mt: '30px', flexWrap: 'wrap' }}>
+            <Box sx={{ display: 'flex', margin: generalVariables.contentPadding, mt: '30px', flexWrap: 'wrap' }}>
                 <Box sx={{ display: "flex", flexWrap: 'wrap', columnGap: '1%', rowGap: '15px', mt: '20px', width: '100%' }}>
                     {gamesList.length == 0 ? (
                         <Typography sx={{ color: customColors.black }}>Nemáš žádné uložené hry</Typography>

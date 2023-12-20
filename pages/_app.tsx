@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { AppProps } from 'next/app';
 import { CacheProvider, EmotionCache } from '@emotion/react';
-import { ThemeProvider, CssBaseline, createTheme } from '@mui/material';
+import { ThemeProvider, CssBaseline, createTheme, useTheme } from '@mui/material';
 import { getApolloClient } from '../utility/apollo-client';
 import { AuthContextProvider } from '@/components/AuthContextProvider';
 import { ApolloProvider } from '@apollo/client';

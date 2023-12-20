@@ -40,9 +40,9 @@ export const HeaderProfileButton = () => {
     if (isLoaded == false) {
         const intervalId = setInterval(() => {
             getCurrentUsername();
-        }, 2000);
+        }, 1000);
 
-        return () => clearInterval(intervalId);
+      return () => clearInterval(intervalId);
     }
 
 }, [username]);
