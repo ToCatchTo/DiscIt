@@ -16,6 +16,7 @@ import {
   Select,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { NextPage } from 'next';
 import NextLink from 'next/link';
@@ -40,23 +41,23 @@ const Register: NextPage = () => {
   const isUsernameUsed = async (username: any) => {
     const usernameQuery = query(usersRef, where("username", "==", username));
     const querySnapshot = await getDocs(usernameQuery);
-    return querySnapshot; 
+    return querySnapshot;
   }
 
   const handleForm = async (event: any) => {
     event.preventDefault();
     const usernameResult = await isUsernameUsed(username);
     const userData = usernameResult.docs.map((doc) => doc.data());
-    const registerResult = await authUtils.register(email, password); 
+    const registerResult = await authUtils.register(email, password);
     const friendList: any = [];
     const pendingRequests: any = [];
     const gamesSaved: any = [];
-    if(registerResult && userData.length == 0) {
+    if (registerResult && userData.length == 0) {
       createUser({ variables: { email, username, friendList, pendingRequests, gamesSaved } });
       router.push('/login');
     }
 
-    if(userData.length > 0)
+    if (userData.length > 0)
       alert("Toto jméno je už používané. Zvolte si jiné.");
   };
 
@@ -67,6 +68,8 @@ const Register: NextPage = () => {
     },
   };
 
+  const theme: any = useTheme();
+
   return (
     <ThemeProvider theme={mainTheme}>
       <Header></Header>
@@ -74,12 +77,12 @@ const Register: NextPage = () => {
         width="100vw"
         height="100vh"
         top={0}
-        sx={{ bgcolor: customColors.white, position: 'absolute', zIndex: -1 }}
+        sx={{ bgcolor: customColors.white, position: 'absolute', zIndex: -1, display: 'flex', alignItems: 'center', padding: '0px 15px' }}
       >
         <Container
           component="main"
           maxWidth="xs"
-          sx={{ pb: '2  5px', border: '2px solid black', borderRadius: '20px', mt: '10%' }}
+          sx={{ pb: '2  5px', border: '2px solid black', borderRadius: '20px' }}
         >
           <Box
             sx={{
@@ -153,7 +156,10 @@ const Register: NextPage = () => {
               >
                 Registrovat se
               </Button>
-              <Grid container>
+              <Grid container sx={{
+                display: 'flex',
+                [theme.breakpoints.down(420)]: { flexDirection: 'column', textAlign: 'center' }
+              }}>
                 <Grid item>
                   <Link component={NextLink} href="/login" variant="body2" sx={{ color: customColors.black, textDecorationColor: customColors.black }}>
                     Už máte účet?

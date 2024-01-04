@@ -11,6 +11,7 @@ import {
   Link,
   TextField,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { NextPage } from 'next';
 import NextLink from 'next/link';
@@ -43,6 +44,8 @@ const Login: NextPage = () => {
     },
   };
 
+  const theme: any = useTheme();
+
   return (
     <ThemeProvider theme={mainTheme}>
       <Header></Header>
@@ -50,12 +53,12 @@ const Login: NextPage = () => {
         width="100vw"
         height="100vh"
         top={0}
-        sx={{ bgcolor: customColors.white, position: 'absolute', zIndex: -1 }}
+        sx={{ bgcolor: customColors.white, position: 'absolute', zIndex: -1, display: 'flex', alignItems: 'center', padding: '0px 15px' }}
       >
         <Container
           component="main"
           maxWidth="xs"
-          sx={{ pb: '2  5px', border: '2px solid black', borderRadius: '20px', mt: '10%', bgcolor: customColors.white }}
+          sx={{ pb: '2  5px', border: '2px solid black', borderRadius: '20px', bgcolor: customColors.white }}
         >
           <Box
             sx={{
@@ -115,7 +118,10 @@ const Login: NextPage = () => {
               >
                 Přihlásit se
               </Button>
-              <Grid container>
+              <Grid container sx={{
+                display: 'flex',
+                [theme.breakpoints.down(420)]: { flexDirection: 'column', textAlign: 'center', gap: '5px' }
+              }}>
                 <Grid item xs>
                   <Link component={NextLink} href="/passwordReset" variant="body2" sx={{ color: customColors.black, textDecorationColor: customColors.black }}>
                     Zapomněli jste heslo?

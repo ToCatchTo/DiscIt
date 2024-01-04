@@ -25,14 +25,6 @@ export const customColors = {
   lightBackground: '#E4E4E4'
 }
 
-export const breakpoints = {
-  xLarge: '1500px',
-  Large: '1280px',
-  Medium: '960px',
-  Small: '640px',
-  Tiny: '480px'
-}
-
 export const generalVariables = {
   contentPadding: '0px 13%',
 }

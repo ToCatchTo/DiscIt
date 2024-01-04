@@ -1,7 +1,7 @@
 import { Header } from '@/components/HeaderGroup/Header';
 import { Banner } from '@/components/Banner';
 import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
-import { Box, Button, Dialog, DialogTitle, Pagination, TextField, ThemeProvider, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogTitle, Hidden, Pagination, TextField, ThemeProvider, Typography, useTheme } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { NextPage } from 'next';
@@ -24,7 +24,7 @@ const Friends: NextPage = () => {
     const [currentFriendList, setCurrentFriendList] = useState(0);
     const [currentGames, setCurrentGames] = useState(0);
     const [needToInitializeData, setNeedToInitializeData] = useState(true);
-    
+
     const getCurrentUser = async () => {
         const firestore = getFirestore();
         const usersRef = collection(firestore, 'users');
@@ -36,8 +36,7 @@ const Friends: NextPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if(needToInitializeData)
-            {
+            if (needToInitializeData) {
                 await getCurrentUser();
                 setNeedToInitializeData(false);
             }
@@ -51,21 +50,36 @@ const Friends: NextPage = () => {
 
     }, [needToInitializeData]);
 
+    const theme: any = useTheme();
+
     return (
         <Box>
             <Header></Header>
             <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/banner-background.jpg'} imgBg={false} />
-            <Box sx={{ display: 'flex', margin: generalVariables.contentPadding, mt: '30px' }}>
-                <AccountCircleIcon sx={{ height: '200px', width: '250px' }} />
-                <Box sx={{width: '3px', height: '200px', backgroundColor: customColors.black, mr: '40px'}}></Box>
-                <Box sx={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
-                    <Typography fontSize='25px'><b>Jméno: </b> {currentUsername}</Typography>
-                    <Typography fontSize='25px'><b>Email: </b> {currentUserEmail}</Typography>
-                    <Typography fontSize='25px'><b>Počet přátel: </b> {currentFriendList} </Typography>
-                    <Typography fontSize='25px'><b>Počet uložených her: </b> {currentGames} </Typography>
+            <Box sx={{
+                display: 'flex', padding: generalVariables.contentPadding, mt: '30px',
+                [theme.breakpoints.down('sm')]: { flexDirection: 'column', alignItems: 'center'},
+                [theme.breakpoints.down('md')]: { padding: '0 7%' },
+            }}>
+                <Box sx={{
+                    height: '200px', width: '250px',
+                    [theme.breakpoints.down('md')]: { width: '210px' },
+                }}>
+                    <AccountCircleIcon sx={{ height: '100%', width: '100%' }} />
+                </Box>
+                <Box sx={{
+                    width: '2px', height: '180px', backgroundColor: customColors.black, mr: '40px',
+                    [theme.breakpoints.down('md')]: { mr: '20px' },
+                    [theme.breakpoints.down('sm')]: { height: '2px', width: '60%', mr: '0px', mb: '20px'}
+                }}></Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <Typography fontSize='22px'><b>Jméno: </b> {currentUsername}</Typography>
+                    <Typography fontSize='22px'><b>Email: </b> {currentUserEmail}</Typography>
+                    <Typography fontSize='22px'><b>Počet přátel: </b> {currentFriendList} </Typography>
+                    <Typography fontSize='22px'><b>Počet uložených her: </b> {currentGames} </Typography>
                 </Box>
             </Box>
-            <Box sx={{ width: '100%', pt: '30px', position: 'absolute', bottom: '0px' }}>
+            <Box sx={{ width: '100%', pt: '30px' }}>
                 <Footer />
             </Box>
         </Box>

@@ -1,5 +1,5 @@
 import { customColors } from '@/styles/themes/mainThemeOptions';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Hidden, Typography, useTheme } from '@mui/material';
 import * as React from 'react';
 import { FC } from 'react';
 import { BreadcrumbsNavigation } from './HeaderGroup/Header__Breadcrumbs';
@@ -31,18 +31,21 @@ export const Banner: FC<Props> = (props) => {
                     [theme.breakpoints.down('md')]: { height: '60%' },
                     [theme.breakpoints.up('md')]: { height: '100%' },
                 }}>
-                    <Box sx={{ zIndex: 0, mt: '30px', ml: '13%', position: 'absolute' }}>
-                        <BreadcrumbsNavigation pageName={pageName} href={href} />
-                    </Box>
+                    <Hidden mdDown>
+                        <Box sx={{ zIndex: 0, mt: '30px', ml: '13%', position: 'absolute', top: '10%' }}>
+                            <BreadcrumbsNavigation pageName={pageName} href={href} />
+                        </Box>
+                    </Hidden>
                     <Box component='img' sx={{ width: '100%', height: '100%', objectFit: 'cover' }} alt='Banner obrázek' src={picturePath}>
                     </Box>
-                    <Box sx={{ display: 'flex', rowGap: '15px', flexDirection: 'column', position: 'absolute',
-                [theme.breakpoints.down('md')]: { pl: '7%', top: '30%' },
-                [theme.breakpoints.up('md')]: { pl: '13%', top: '40%' },
-                }}>
+                    <Box sx={{
+                        display: 'flex', rowGap: '15px', flexDirection: 'column', position: 'absolute', padding: '0 13%', top: '40%',
+                        [theme.breakpoints.down('md')]: { padding: '0 7%', top: '30%' },
+                        [theme.breakpoints.down(480)]: { textAlign: 'center', alignItems: 'center', rowGap: '5px', top: '25%' },
+                    }}>
                         <Typography sx={{
                             color: customColors.white, fontWeight: 'bold',
-                            [theme.breakpoints.down('md')]: { fontSize: '32px' },
+                            [theme.breakpoints.down('md')]: { fontSize: '31px' },
                             [theme.breakpoints.up('md')]: { fontSize: '42px' },
                         }}>
                             {title}
@@ -61,11 +64,17 @@ export const Banner: FC<Props> = (props) => {
             </Box>
             :
             <Box>
-                <Box sx={{ zIndex: 0, mt: '30px', ml: '13%' }}>
-                    <BreadcrumbsNavigation pageName={pageName} href={href} black={true} />
-                </Box>
-                <Box sx={{ pt: '20px', display: 'flex', rowGap: '15px', pl: '13%', flexDirection: 'column', pr: '13%' }}>
-                    <Typography sx={{ color: customColors.black, fontSize: '42px', fontWeight: 'bold' }}>
+                <Hidden mdDown>
+                    <Box sx={{ zIndex: 0, mt: '30px', ml: '13%', }}>
+                        <BreadcrumbsNavigation pageName={pageName} href={href} black={true} />
+                    </Box>
+                </Hidden>
+                <Box sx={{
+                    pt: '20px', display: 'flex', rowGap: '15px', pl: '13%', flexDirection: 'column', pr: '13%',
+                    [theme.breakpoints.down('md')]: { padding: '20px 7% 0px 7%' },
+                }}>
+                    <Typography sx={{ color: customColors.black, fontSize: '42px', fontWeight: 'bold',
+                    [theme.breakpoints.down('md')]: {fontSize: '30px'}}}>
                         {title}
                     </Typography>
                     <Box sx={{ height: '2px', width: '100%', backgroundColor: customColors.black }}>

@@ -41,7 +41,7 @@ export const Header = () => {
             height: '70px',
             alignItems: 'center',
             justifyContent: 'space-between',
-            [theme.breakpoints.down('lg')]: { columnGap: '50px', padding: '0px 60px' },
+            [theme.breakpoints.down('lg')]: { columnGap: '50px', padding: '0px 7%' },
             [theme.breakpoints.up('lg')]: { padding: generalVariables.contentPadding },
             zIndex: 1
         }}>

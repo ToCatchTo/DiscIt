@@ -11,6 +11,7 @@ import {
     Link,
     TextField,
     Typography,
+    useTheme,
 } from '@mui/material';
 import { NextPage } from 'next';
 import NextLink from 'next/link';
@@ -27,7 +28,7 @@ const PasswordReset: NextPage = () => {
     const triggerResetEmail = async () => {
         await sendPasswordResetEmail(auth, email);
         console.log("Password reset email sent")
-      }
+    }
 
     const handleForm = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -40,6 +41,8 @@ const PasswordReset: NextPage = () => {
         },
     };
 
+    const theme: any = useTheme();
+
     return (
         <ThemeProvider theme={mainTheme}>
             <Header></Header>
@@ -47,12 +50,12 @@ const PasswordReset: NextPage = () => {
                 width="100vw"
                 height="100vh"
                 top={0}
-                sx={{ bgcolor: customColors.white, position: 'absolute', zIndex: -1 }}
+                sx={{ bgcolor: customColors.white, position: 'absolute', zIndex: -1, display: 'flex', alignItems: 'center', padding: '0px 15px' }}
             >
                 <Container
                     component="main"
                     maxWidth="xs"
-                    sx={{ pb: '2  5px', border: '2px solid black', borderRadius: '20px', mt: '10%' }}
+                    sx={{ pb: '2  5px', border: '2px solid black', borderRadius: '20px' }}
                 >
                     <Box
                         sx={{
@@ -95,7 +98,10 @@ const PasswordReset: NextPage = () => {
                             >
                                 Zaslat email
                             </Button>
-                            <Grid container>
+                            <Grid container sx={{
+                                display: 'flex',
+                                [theme.breakpoints.down(420)]: { flexDirection: 'column', textAlign: 'center', gap: '5px' }
+                            }}>
                                 <Grid item>
                                     <Link component={NextLink} href="/login" variant="body2" sx={{ color: customColors.black, textDecorationColor: customColors.black }}>
                                         Vzpoměli jste si?

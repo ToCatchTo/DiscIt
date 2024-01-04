@@ -16,6 +16,7 @@ export const ZigZag = () => {
                     [theme.breakpoints.down('md')]: { flexDirection: 'column-reverse', rowGap: '30px' },
                 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', rowGap: '15px', justifyContent: 'center',
+                        [theme.breakpoints.down(480)]: { textAlign: 'center', alignItems: 'center' },
                         [theme.breakpoints.down('md')]: { width: '100%'},
                         [theme.breakpoints.up('md')]: { width: '49.8%'},
                 }}>
@@ -57,6 +58,7 @@ export const ZigZag = () => {
                         </Box>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', rowGap: '15px', justifyContent: 'center',
+                        [theme.breakpoints.down(480)]: { textAlign: 'center', alignItems: 'center' },
                         [theme.breakpoints.down('md')]: { width: '100%'},
                         [theme.breakpoints.up('md')]: { width: '49.8%'},
                 }}>
@@ -82,6 +84,7 @@ export const ZigZag = () => {
                     [theme.breakpoints.down('md')]: { flexDirection: 'column-reverse', rowGap: '30px' },
                 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', rowGap: '15px', justifyContent: 'center',
+                        [theme.breakpoints.down(480)]: { textAlign: 'center', alignItems: 'center' },
                         [theme.breakpoints.down('md')]: { width: '100%'},
                         [theme.breakpoints.up('md')]: { width: '49.8%'},
                 }}>
@@ -123,6 +126,7 @@ export const ZigZag = () => {
                         </Box>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', rowGap: '15px', justifyContent: 'center',
+                        [theme.breakpoints.down(480)]: { textAlign: 'center', alignItems: 'center' },
                         [theme.breakpoints.down('md')]: { width: '100%'},
                         [theme.breakpoints.up('md')]: { width: '49.8%'},
                 }}>
