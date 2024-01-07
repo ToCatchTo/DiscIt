@@ -1,7 +1,7 @@
 import { Header } from '@/components/HeaderGroup/Header';
 import { Banner } from '@/components/Banner';
 import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
-import { Box, Button, Dialog, DialogTitle, Pagination, TextField, ThemeProvider, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogTitle, Pagination, TextField, ThemeProvider, Typography, useTheme } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { NextPage } from 'next';
@@ -121,9 +121,10 @@ const Friends: NextPage = () => {
         if (targetUser.docs.length > 0) {
             let userId: string = targetUser.docs[0].id;
             let pendingRequests: Array<friendRequest> = targetUser.docs[0].data().pendingRequests;
-            let friendRequest: friendRequest = { sender: "", state: "" };
+            let friendRequest: friendRequest = { sender: "", state: "", username: "" };
             friendRequest.sender = currentUser.docs[0].id;
             friendRequest.state = "pending";
+            friendRequest.username = currentUser.docs[0].data().username;
 
             pendingRequests.push(friendRequest);
             await updateDoc(doc(firestore, 'users', userId), {
@@ -217,27 +218,37 @@ const Friends: NextPage = () => {
         },
     };
 
-    let testarray: any = [];
-    testarray = friendList;
-    console.log(testarray.slice(0, 1));
+    const theme: any = useTheme();
 
     return (
         <Box>
             <Header></Header>
             <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/banner-background.jpg'} imgBg={false} />
-            <Box sx={{ display: 'flex', margin: generalVariables.contentPadding, mt: '30px' }}>
+            <Box sx={{
+                display: 'flex', padding: generalVariables.contentPadding, mt: '30px',
+                [theme.breakpoints.down('md')]: { padding: '0 7%' }
+            }}>
                 <Button sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '10px', borderRadius: '10px', ...openDialongBtn }} onClick={handleRequestsWindowAppear}>Žádosti o přátelství</Button>
                 <Dialog key={0} open={requestsWindowOpened} onClose={handleRequestsWindowAppear} fullWidth={true} maxWidth={'md'} PaperProps={{ sx: { borderRadius: '10px' } }} >
-                    <Box sx={{ height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px' }}>
+                    <Box sx={{
+                        height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px',
+                        [theme.breakpoints.down('sm')]: { padding: '20px' }
+                    }}>
                         <Typography sx={{ color: customColors.black, fontSize: '23px', fontWeight: 'bold' }}>Žádosti o přátelství</Typography>
                         <Box sx={{ display: 'flex', width: '100%', gap: '10px', flexDirection: 'column' }}>
                             {requestList.length == 0 ? (
                                 <Typography sx={{ color: customColors.black }}>Nemáš žádné žádosti</Typography>
                             ) : (
                                 requestList.map((item: any, index: any) => (
-                                    <Box key={index} sx={{ display: 'flex', flexWrap: 'nowrap', backgroundColor: customColors.black, alignItems: 'center', borderRadius: '10px', padding: '10px', width: '100%', justifyContent: 'space-between' }}>
-                                        <Typography><b>Žádost od:</b> {item.sender}</Typography>
-                                        <Box sx={{ display: 'flex', gap: '30px' }}>
+                                    <Box key={index} sx={{
+                                        display: 'flex', flexWrap: 'nowrap', backgroundColor: customColors.black, alignItems: 'center', borderRadius: '10px', padding: '10px', width: '100%', justifyContent: 'space-between',
+                                        [theme.breakpoints.down('sm')]: { flexDirection: 'column', flexWrap: 'wrap', gap: '10px', textAlign: 'center' }
+                                    }}>
+                                        <Typography><b>Žádost od:</b> {item.username}</Typography>
+                                        <Box sx={{
+                                            display: 'flex', gap: '30px',
+                                            [theme.breakpoints.down('sm')]: { gap: '10px' }
+                                        }}>
                                             <Button sx={{ backgroundColor: 'green', color: customColors.black, ...openDialongBtn }} onClick={() => handleRequest(index, true)}>Přijmout</Button>
                                             <Button sx={{ backgroundColor: 'red', color: customColors.black, ...openDialongBtn }} onClick={() => handleRequest(index, false)}>Odmítnout</Button>
                                         </Box>
@@ -247,7 +258,10 @@ const Friends: NextPage = () => {
                     </Box>
                 </Dialog>
             </Box>
-            <Box sx={{ display: "flex", margin: generalVariables.contentPadding, flexWrap: 'wrap', columnGap: '1%', rowGap: '15px', mt: '30px' }}>
+            <Box sx={{
+                display: "flex", padding: generalVariables.contentPadding, flexWrap: 'wrap', columnGap: '1%', rowGap: '15px', mt: '30px',
+                [theme.breakpoints.down('md')]: { padding: '0 7%' }
+            }}>
                 {loadingFriends ? (
                     <Typography>Načítání přátel...</Typography>
                 ) : (
@@ -256,11 +270,23 @@ const Friends: NextPage = () => {
                     ) : (
                         friendList.slice((currentPage - 1) * 6, 6 * currentPage).map((item: any, index: any) => (
                             item.email !== currentUserEmail ? (
-                                <Box key={index} sx={{ width: '49.5%', height: '70px', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <Typography sx={{ color: customColors.white, fontSize: '25px', fontWeight: '500' }}>{item.username}</Typography>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                                        <AccountCircleIcon sx={{ height: '60px', width: '60px', color: customColors.white }} />
-                                        <DeleteIcon onClick={() => handleDelete(item.email, currentUserEmail)} sx={{ height: '45px', width: '45px', color: customColors.white, cursor: 'pointer' }} />
+                                <Box key={index} sx={{
+                                    width: '49.5%', height: '70px', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                    [theme.breakpoints.down('md')]: { width: '100%' }
+                                }}>
+                                    <Typography sx={{
+                                        color: customColors.white, fontSize: '25px', fontWeight: '500',
+                                        [theme.breakpoints.down('sm')]: { fontSize: '20px' }
+                                    }}>{item.username}</Typography>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px', [theme.breakpoints.down('sm')]: { gap: '10px' } }}>
+                                        <AccountCircleIcon sx={{
+                                            height: '60px', width: '60px', color: customColors.white,
+                                            [theme.breakpoints.down('sm')]: { height: '40px', width: '40px' }
+                                        }} />
+                                        <DeleteIcon onClick={() => handleDelete(item.email, currentUserEmail)} sx={{
+                                            height: '45px', width: '45px', color: customColors.white, cursor: 'pointer',
+                                            [theme.breakpoints.down('sm')]: { height: '35px', width: '35px' }
+                                        }} />
                                     </Box>
                                 </Box>
                             ) : (
@@ -269,18 +295,26 @@ const Friends: NextPage = () => {
                         )))
                 )}
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', margin: generalVariables.contentPadding, mt: '20px' }}>
+            <Box sx={{
+                display: 'flex', justifyContent: 'space-between', padding: generalVariables.contentPadding, mt: '20px',
+                [theme.breakpoints.down('sm')]: { flexDirection: 'column', alignItems: 'center', gap: '10px' },
+                [theme.breakpoints.down('md')]: { padding: '0 7%' }
+            }}>
                 <Pagination count={pageCount} page={currentPage} onChange={(event, page) => setCurrentPage(page)} />
                 <Button sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '10px', borderRadius: '10px', ...openDialongBtn }} onClick={handleAddFriendWindowAppear}>Přidat přítele</Button>
                 <Dialog key={1} open={addFriendWindowOpened} onClose={handleAddFriendWindowAppear} fullWidth={true} maxWidth={'md'} PaperProps={{ sx: { borderRadius: '10px' } }} >
-                    <Box sx={{ height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px' }}>
+                    <Box sx={{ height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px',
+                    [theme.breakpoints.down('sm')]: { padding: '20px' }
+                }}>
                         <Typography sx={{ color: customColors.black, fontSize: '23px', fontWeight: 'bold' }}>Přidat přítele</Typography>
                         <TextField sx={{ backgroundColor: customColors.white, borderRadius: '4px' }} variant="outlined" label="Zadejte jméno uživatele" value={textFieldValue} onChange={handleTextFieldChange} />
                         <Button sx={{ backgroundColor: customColors.black, color: customColors.white, ...sendRequestBtn }} onClick={() => sendFriendRequest(textFieldValue)} >Poslat žádost</Button>
                     </Box>
                 </Dialog>
             </Box>
-            <Box sx={{ width: '100%', pt: '30px', position: 'absolute', bottom: '0px' }}>
+            <Box sx={{ width: '100%', pt: '30px', position: 'absolute', bottom: '0',
+            [theme.breakpoints.down('md')]: { position: 'relative' }
+        }}>
                 <Footer />
             </Box>
         </Box>

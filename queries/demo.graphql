@@ -38,6 +38,7 @@ mutation CreateUserMutation($email: String!, $username: String!, $friendList: [F
     pendingRequests {
       state
       sender
+      username
     }
     gamesSaved {
       name

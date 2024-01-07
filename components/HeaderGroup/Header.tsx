@@ -7,18 +7,24 @@ import { HeaderButtonList } from './Header__ButtonList';
 import { HeaderProfileButton } from './Header__ProfileButton';
 import { NotLoggedButton } from './Header__NotLoggedButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { authUtils } from '@/firebase/authUtils';
 import router from 'next/router';
 
 export const Header = () => {
-
     let isLoggedIn = false;
     let loginState = localStorage.getItem('loginState');
     if (loginState == 'true')
         isLoggedIn = true;
 
     const [isOpen, setIsOpen] = useState(false);
+    const [headerList, setHeaderList] = useState<Array<string>>([]);
+    const [hrefList, setHrefList] = useState<Array<string>>([]);
+
+    useEffect(() => {
+        setHeaderList(isLoggedIn ? ["PROFIL", "O HŘE", "HŘIŠTĚ", "ZÁZNAMY", "PŘÁTELÉ", "ODHLÁSIT SE"] : ["O HŘE", "HŘIŠTĚ", "PŘIHLÁSIT SE"]);
+        setHrefList(isLoggedIn ? ["/profileDetail", "/about", "/mapPage", "/gamesList", "/friends"] : ["/about", "/mapPage", "/login"]);
+    }, [isLoggedIn]);
 
     const handleDrawer = () => {
         setIsOpen(!isOpen);
@@ -30,6 +36,7 @@ export const Header = () => {
         localStorage.setItem('loginState', 'false');
         authUtils.logout();
         router.push('/login');
+        console.log(isLoggedIn);
     };
 
     return (
@@ -75,27 +82,14 @@ export const Header = () => {
                         [theme.breakpoints.up('sm')]: { width: '50%', mr: '30px' },
                         [theme.breakpoints.down('sm')]: { width: '100%', mr: '0px' }
                     }}>
-                        <ListItem sx={{ height: '30px', margin: '5px 0px', flexWrap: 'wrap' }}>
-                            <Button href='/profileDetail' sx={{ width: '100%', height: '100%', color: customColors.white, padding: '0px' }}>PROFIL</Button>
-                        </ListItem>
-                        <ListItem sx={{ height: '30px', margin: '5px 0px', flexWrap: 'wrap' }}>
-                            <Button href='/about' sx={{ width: '100%', height: '100%', color: customColors.white, padding: '0px' }}>O HŘE</Button>
-                        </ListItem>
-                        <ListItem sx={{ height: '30px', margin: '5px 0px' }}>
-                            <Button href='/mapPage' sx={{ width: '100%', height: '100%', color: customColors.white, padding: '0px' }}>HŘIŠTĚ</Button>
-                        </ListItem>
-                        <ListItem sx={{ height: '30px', margin: '5px 0px' }}>
-                            <Button href='/gamesList' sx={{ width: '100%', height: '100%', color: customColors.white, padding: '0px' }}>ZÁZNAMY</Button>
-                        </ListItem>
-                        <ListItem sx={{ height: '30px', margin: '5px 0px' }}>
-                            <Button href='/friends' sx={{ width: '100%', height: '100%', color: customColors.white, padding: '0px' }}>PŘÁTELÉ</Button>
-                        </ListItem>
-                        <ListItem sx={{ height: '30px', margin: '5px 0px', flexWrap: 'wrap' }}>
-                            <Button href='#' sx={{ width: '100%', height: '100%', color: customColors.white, padding: '0px' }}>NASTAVENÍ</Button>
-                        </ListItem>
-                        <ListItem sx={{ height: '30px', margin: '5px 0px' }}>
-                            <Button onClick={handleLogout} sx={{ width: '100%', height: '100%', color: customColors.white, padding: '0px' }}>ODHLÁSIT SE</Button>
-                        </ListItem>
+                        {headerList.map((item: any, index: any) => (
+                            <ListItem sx={{ height: '30px', margin: '5px 0px', flexWrap: 'wrap' }}>
+                                {headerList[index] == "ODHLÁSIT SE" ?
+                                    <Button onClick={handleLogout} sx={{ width: '100%', height: '100%', color: customColors.white, padding: '0px' }}>{headerList[index]}</Button>
+                                    :   <Button href={hrefList[index]} sx={{ width: '100%', height: '100%', color: customColors.white, padding: '0px' }}>{headerList[index]}</Button>
+                                }
+                            </ListItem>
+                        ))}
                     </List>
                 </Drawer>
                 <Hidden mdDown>

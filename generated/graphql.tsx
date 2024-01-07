@@ -23,12 +23,14 @@ export type FriendInput = {
 export type FriendRequestInput = {
   sender?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
+  username?: InputMaybe<Scalars['String']>;
 };
 
 export type FriendRequestType = {
   __typename?: 'FriendRequestType';
   sender?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
+  username?: Maybe<Scalars['String']>;
 };
 
 export type FriendType = {
@@ -105,7 +107,7 @@ export type CreateUserMutationMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutationMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', email?: string | null, username?: string | null, friendList?: Array<{ __typename?: 'FriendType', email?: string | null, username?: string | null } | null> | null, pendingRequests?: Array<{ __typename?: 'FriendRequestType', state?: string | null, sender?: string | null } | null> | null, gamesSaved?: Array<{ __typename?: 'SavedGameType', name?: string | null, date?: string | null } | null> | null } | null };
+export type CreateUserMutationMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', email?: string | null, username?: string | null, friendList?: Array<{ __typename?: 'FriendType', email?: string | null, username?: string | null } | null> | null, pendingRequests?: Array<{ __typename?: 'FriendRequestType', state?: string | null, sender?: string | null, username?: string | null } | null> | null, gamesSaved?: Array<{ __typename?: 'SavedGameType', name?: string | null, date?: string | null } | null> | null } | null };
 
 
 export const UsersQueryDocument = gql`
@@ -211,6 +213,7 @@ export const CreateUserMutationDocument = gql`
     pendingRequests {
       state
       sender
+      username
     }
     gamesSaved {
       name

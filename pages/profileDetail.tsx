@@ -79,7 +79,7 @@ const Friends: NextPage = () => {
                     <Typography fontSize='22px'><b>Počet uložených her: </b> {currentGames} </Typography>
                 </Box>
             </Box>
-            <Box sx={{ width: '100%', pt: '30px' }}>
+            <Box sx={{ pt: '30px', position: 'absolute', bottom: '0', width: '100%' }}>
                 <Footer />
             </Box>
         </Box>

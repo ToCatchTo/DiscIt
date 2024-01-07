@@ -70,7 +70,7 @@ export const Banner: FC<Props> = (props) => {
                     </Box>
                 </Hidden>
                 <Box sx={{
-                    pt: '20px', display: 'flex', rowGap: '15px', pl: '13%', flexDirection: 'column', pr: '13%',
+                    padding: '20px 13% 0px 13%', display: 'flex', rowGap: '15px', flexDirection: 'column',
                     [theme.breakpoints.down('md')]: { padding: '20px 7% 0px 7%' },
                 }}>
                     <Typography sx={{ color: customColors.black, fontSize: '42px', fontWeight: 'bold',

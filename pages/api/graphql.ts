@@ -14,6 +14,7 @@ export interface Friend {
 export interface friendRequest {
   state: string
   sender: string
+  username: string
 }
 
 export interface SavedGame {
@@ -33,10 +34,12 @@ type Query {
 type FriendRequestType { 
   state: String
   sender: String
+  username: String
 }
 input FriendRequestInput {
   state: String
   sender: String
+  username: String
 }
 type SavedGameType { 
   name: String
