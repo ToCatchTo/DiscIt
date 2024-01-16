@@ -22,8 +22,8 @@ export const Header = () => {
     const [hrefList, setHrefList] = useState<Array<string>>([]);
 
     useEffect(() => {
-        setHeaderList(isLoggedIn ? ["PROFIL", "O HŘE", "HŘIŠTĚ", "ZÁZNAMY", "PŘÁTELÉ", "ODHLÁSIT SE"] : ["O HŘE", "HŘIŠTĚ", "PŘIHLÁSIT SE"]);
-        setHrefList(isLoggedIn ? ["/profileDetail", "/about", "/mapPage", "/gamesList", "/friends"] : ["/about", "/mapPage", "/login"]);
+        setHeaderList(isLoggedIn ? ["-- HRÁT! --", "PROFIL", "O HŘE", "HŘIŠTĚ", "ZÁZNAMY", "PŘÁTELÉ", "ODHLÁSIT SE"] : ["O HŘE", "HŘIŠTĚ", "PŘIHLÁSIT SE"]);
+        setHrefList(isLoggedIn ? ["/lobby", "/profileDetail", "/about", "/mapPage", "/gamesList", "/friends"] : ["/about", "/mapPage", "/login"]);
     }, [isLoggedIn]);
 
     const handleDrawer = () => {

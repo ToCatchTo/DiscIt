@@ -10,7 +10,7 @@ import { ZigZag } from '@/components/Zig-zag';
 import { Footer } from '@/components/Footer';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { CollectionReference, DocumentData, Firestore, collection, doc, getDocs, getFirestore, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
+import { CollectionReference, DocumentData, Firestore, collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { Friend, SavedGame, friendRequest } from './api/graphql';
 import { WidthFull } from '@mui/icons-material';
@@ -26,53 +26,57 @@ const GamesList: NextPage = () => {
     const currentUserEmail = (currentUserEmailDirty ?? "").slice(1, -1);
     const [needToInitializeData, setNeedToInitializeData] = useState(true);
     const [needToUpdateData, setNeedToUpdateData] = useState(true);
-    const [gamesList, setGamesList] = useState<Array<SavedGame>>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    let savedGames: Array<SavedGame> = [];
-    let pageCount = Math.floor(gamesList.length / 6 + 1);
+    const [usersGames, setUsersGames] = useState<Array<SavedGame>>([]);
+    let pageCount = Math.floor(usersGames.length / 6 + 1);
+    let gamesList: Array<SavedGame> = [];
+    const router = useRouter();
 
-
-    const getData = async () => {
+    const fetchData = async () => {
         const firestore = getFirestore();
         const usersRef = collection(firestore, 'users');
-        let newGamesList: Array<SavedGame> = [];
-        newGamesList = (await getDocs(query(usersRef, where("email", "==", currentUserEmail)))).docs[0].data().gamesSaved;
+        const currentUser = (await getDocs(query(usersRef, where("email", "==", currentUserEmail))));
 
-        return newGamesList;
+        currentUser.docs[0].data().gamesSaved.forEach(async (item: string) => {
+            let pathParts = item.split("/savedGames/");
+            let gameId = pathParts[1];
+            const savedGamesRef = doc(firestore, 'savedGames', gameId);
+            const gameDoc = await getDoc(savedGamesRef);
+            let game: DocumentData = {};
+
+            if (gameDoc.exists()) {
+                game = gameDoc.data();
+                console.log(game);
+                gamesList.push({ date: game.date, playground: game.playground, gameShotsList: game.gameShotsList, players: game.players });
+            }
+
+            setUsersGames(gamesList);
+        });
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            if (needToInitializeData) {
-                savedGames = await getData();
-                setNeedToInitializeData(false);
-                setGamesList(savedGames);
-                setNeedToUpdateData(false);
-            }
-        };
-
-        const intervalId = setInterval(() => {
-            fetchData();
-        }, 1000);
-
-        return () => clearInterval(intervalId);
-
-    }, [needToUpdateData]);
+        fetchData();
+    }, []);
 
     const handleDelete = async (indexOfDelete: number) => {
         const firestore = getFirestore();
         const usersRef = collection(firestore, 'users');
         let currentUser = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
 
-        gamesList.splice(indexOfDelete, 1);
+        usersGames.splice(indexOfDelete, 1);
 
         await updateDoc(doc(firestore, 'users', currentUser.docs[0].id), {
-            gamesSaved: gamesList,
+            gamesSaved: usersGames,
         });
 
         setNeedToUpdateData(true);
     }
 
+    const handleRedirect = (gameData: SavedGame) => {
+        localStorage.setItem('gameData', JSON.stringify(gameData));
+        router.push("/gameDetail");
+    }
+    
     const theme: any = useTheme();
 
     return (
@@ -84,11 +88,11 @@ const GamesList: NextPage = () => {
                 [theme.breakpoints.down('md')]: { padding: '0 7%' }
             }}>
                 <Box sx={{ display: "flex", flexWrap: 'wrap', columnGap: '1%', rowGap: '15px', mt: '20px', width: '100%' }}>
-                    {gamesList.length == 0 ? (
+                    {usersGames.length == 0 ? (
                         <Typography sx={{ color: customColors.black }}>Nemáš žádné uložené hry</Typography>
                     ) : (
-                        gamesList.slice((currentPage - 1) * 10, 10 * currentPage).map((item: any, index: any) => (
-                            <Link href='#' style={{ width: '100%', textDecoration: 'none' }}>
+                        usersGames.slice((currentPage - 1) * 10, 10 * currentPage).map((item: any, index: any) => (
+                            <Box component='button' onClick={() => handleRedirect(item)} style={{ width: '100%', textDecoration: 'none', border: 'none', backgroundColor: customColors.white }}>
                                 <Box key={index} sx={{
                                     width: '49.5%', height: 'auto', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                     [theme.breakpoints.down('lg')]: { width: '100%' }
@@ -98,12 +102,12 @@ const GamesList: NextPage = () => {
                                         [theme.breakpoints.down('sm')]: { flexDirection: 'column', gap: '0px' }
                                     }}>
                                         <Typography sx={{
-                                            color: customColors.white, fontSize: '25px', fontWeight: '500',
-                                            [theme.breakpoints.down('sm')]: { fontSize: '18px' }
-                                        }}>{item.name}</Typography>
+                                            color: customColors.white, fontSize: '25px', fontWeight: '500', textAlign: 'start',
+                                            [theme.breakpoints.down('sm')]: { fontSize: '16px' }
+                                        }}>{item.playground}</Typography>
                                         <Typography sx={{
-                                            color: customColors.white, fontSize: '25px', fontWeight: '500',
-                                            [theme.breakpoints.down('sm')]: { fontSize: '18px' }
+                                            color: customColors.white, fontSize: '25px', fontWeight: '500', textAlign: 'start',
+                                            [theme.breakpoints.down('sm')]: { fontSize: '16px' }
                                         }}>{item.date}</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
@@ -113,12 +117,12 @@ const GamesList: NextPage = () => {
                                         }} />
                                     </Box>
                                 </Box>
-                            </Link>
+                            </Box>
                         )))}
                 </Box>
-                <Pagination sx={{ mt: '30px' }} count={pageCount} />
+                <Pagination sx={{ mt: '30px', mb: '80px' }} count={pageCount} />
             </Box>
-            <Box sx={{ width: '100%', pt: '30px', position: 'absolute', bottom: '0' }}>
+            <Box sx={{ position: 'fixed', bottom: '0', width: '100%' }}>
                 <Footer />
             </Box>
         </Box>

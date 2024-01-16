@@ -48,7 +48,7 @@ export type Mutation = {
 export type MutationCreateUserArgs = {
   email: Scalars['String'];
   friendList?: InputMaybe<Array<InputMaybe<FriendInput>>>;
-  gamesSaved?: InputMaybe<Array<InputMaybe<SavedGameInput>>>;
+  gamesSaved?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   pendingRequests?: InputMaybe<Array<InputMaybe<FriendRequestInput>>>;
   username: Scalars['String'];
 };
@@ -68,22 +68,11 @@ export type Query = {
   users: Array<User>;
 };
 
-export type SavedGameInput = {
-  date?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-};
-
-export type SavedGameType = {
-  __typename?: 'SavedGameType';
-  date?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-};
-
 export type User = {
   __typename?: 'User';
   email?: Maybe<Scalars['String']>;
   friendList?: Maybe<Array<Maybe<FriendType>>>;
-  gamesSaved?: Maybe<Array<Maybe<SavedGameType>>>;
+  gamesSaved?: Maybe<Array<Maybe<Scalars['String']>>>;
   pendingRequests?: Maybe<Array<Maybe<FriendRequestType>>>;
   username?: Maybe<Scalars['String']>;
 };
@@ -91,7 +80,7 @@ export type User = {
 export type UsersQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type UsersQueryQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', username?: string | null, email?: string | null, friendList?: Array<{ __typename?: 'FriendType', email?: string | null, username?: string | null } | null> | null, pendingRequests?: Array<{ __typename?: 'FriendRequestType', state?: string | null, sender?: string | null } | null> | null, gamesSaved?: Array<{ __typename?: 'SavedGameType', name?: string | null, date?: string | null } | null> | null }> };
+export type UsersQueryQuery = { __typename?: 'Query', users: Array<{ __typename?: 'User', username?: string | null, email?: string | null, gamesSaved?: Array<string | null> | null, friendList?: Array<{ __typename?: 'FriendType', email?: string | null, username?: string | null } | null> | null, pendingRequests?: Array<{ __typename?: 'FriendRequestType', state?: string | null, sender?: string | null } | null> | null }> };
 
 export type PlaygroundsQueryQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -103,11 +92,11 @@ export type CreateUserMutationMutationVariables = Exact<{
   username: Scalars['String'];
   friendList?: InputMaybe<Array<InputMaybe<FriendInput>> | InputMaybe<FriendInput>>;
   pendingRequests?: InputMaybe<Array<InputMaybe<FriendRequestInput>> | InputMaybe<FriendRequestInput>>;
-  gamesSaved?: InputMaybe<Array<InputMaybe<SavedGameInput>> | InputMaybe<SavedGameInput>>;
+  gamesSaved?: InputMaybe<Array<InputMaybe<Scalars['String']>> | InputMaybe<Scalars['String']>>;
 }>;
 
 
-export type CreateUserMutationMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', email?: string | null, username?: string | null, friendList?: Array<{ __typename?: 'FriendType', email?: string | null, username?: string | null } | null> | null, pendingRequests?: Array<{ __typename?: 'FriendRequestType', state?: string | null, sender?: string | null, username?: string | null } | null> | null, gamesSaved?: Array<{ __typename?: 'SavedGameType', name?: string | null, date?: string | null } | null> | null } | null };
+export type CreateUserMutationMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'User', email?: string | null, username?: string | null, gamesSaved?: Array<string | null> | null, friendList?: Array<{ __typename?: 'FriendType', email?: string | null, username?: string | null } | null> | null, pendingRequests?: Array<{ __typename?: 'FriendRequestType', state?: string | null, sender?: string | null, username?: string | null } | null> | null } | null };
 
 
 export const UsersQueryDocument = gql`
@@ -123,10 +112,7 @@ export const UsersQueryDocument = gql`
       state
       sender
     }
-    gamesSaved {
-      name
-      date
-    }
+    gamesSaved
   }
 }
     `;
@@ -196,7 +182,7 @@ export type PlaygroundsQueryQueryHookResult = ReturnType<typeof usePlaygroundsQu
 export type PlaygroundsQueryLazyQueryHookResult = ReturnType<typeof usePlaygroundsQueryLazyQuery>;
 export type PlaygroundsQueryQueryResult = Apollo.QueryResult<PlaygroundsQueryQuery, PlaygroundsQueryQueryVariables>;
 export const CreateUserMutationDocument = gql`
-    mutation CreateUserMutation($email: String!, $username: String!, $friendList: [FriendInput], $pendingRequests: [FriendRequestInput], $gamesSaved: [SavedGameInput]) {
+    mutation CreateUserMutation($email: String!, $username: String!, $friendList: [FriendInput], $pendingRequests: [FriendRequestInput], $gamesSaved: [String]) {
   createUser(
     email: $email
     username: $username
@@ -215,10 +201,7 @@ export const CreateUserMutationDocument = gql`
       sender
       username
     }
-    gamesSaved {
-      name
-      date
-    }
+    gamesSaved
   }
 }
     `;

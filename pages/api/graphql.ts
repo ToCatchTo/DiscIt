@@ -11,15 +11,36 @@ export interface Friend {
   email: string
 }
 
+export interface Player {
+  username: string
+  email: string
+  friendList: Array<Friend>
+  gamesSaved: Array<SavedGame>
+}
+
+export interface SavedGame {
+  date: string
+  playground: string
+  gameShotsList: Array<gameShots>
+  players: Array<string>
+}
+
+export interface gameShots {
+  shots: Array<number>
+}
+
+export interface Playground {
+  holesNumber: number
+  isPublic: boolean
+  name: string
+  length: number
+  parSum: number
+}
+
 export interface friendRequest {
   state: string
   sender: string
   username: string
-}
-
-export interface SavedGame {
-  name: string
-  date: string
 }
 
 type Context = {
@@ -41,14 +62,6 @@ input FriendRequestInput {
   sender: String
   username: String
 }
-type SavedGameType { 
-  name: String
-  date: String
-}
-input SavedGameInput {
-  name: String
-  date: String
-}
 type FriendType { 
   username: String
   email: String
@@ -58,14 +71,14 @@ input FriendInput {
   email: String
 }
 type Mutation {
-  createUser(username: String!, email: String!, friendList: [FriendInput], pendingRequests: [FriendRequestInput], gamesSaved: [SavedGameInput] ): User
+  createUser(username: String!, email: String!, friendList: [FriendInput], pendingRequests: [FriendRequestInput], gamesSaved: [String] ): User
 }
 type User {
   email: String
   username: String
   friendList: [FriendType]
   pendingRequests: [FriendRequestType]
-  gamesSaved: [SavedGameType]
+  gamesSaved: [String]
 }
 
 type Playgrounds {

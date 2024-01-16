@@ -85,7 +85,7 @@ const Friends: NextPage = () => {
 
         const intervalId = setInterval(() => {
             fetchFriends();
-        }, 1000);
+        }, 500);
 
         return () => clearInterval(intervalId);
 
@@ -296,7 +296,7 @@ const Friends: NextPage = () => {
                 )}
             </Box>
             <Box sx={{
-                display: 'flex', justifyContent: 'space-between', padding: generalVariables.contentPadding, mt: '20px',
+                display: 'flex', justifyContent: 'space-between', padding: generalVariables.contentPadding, mt: '20px', mb: '80px',
                 [theme.breakpoints.down('sm')]: { flexDirection: 'column', alignItems: 'center', gap: '10px' },
                 [theme.breakpoints.down('md')]: { padding: '0 7%' }
             }}>
@@ -312,9 +312,7 @@ const Friends: NextPage = () => {
                     </Box>
                 </Dialog>
             </Box>
-            <Box sx={{ width: '100%', pt: '30px', position: 'absolute', bottom: '0',
-            [theme.breakpoints.down('md')]: { position: 'relative' }
-        }}>
+            <Box sx={{ position: 'fixed', bottom: '0', width: '100%' }}>
                 <Footer />
             </Box>
         </Box>

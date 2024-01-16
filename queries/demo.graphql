@@ -10,10 +10,7 @@ query UsersQuery {
           state
           sender
         }
-        gamesSaved {
-          name
-          date
-        }
+        gamesSaved
     } 
 }
 
@@ -27,7 +24,7 @@ query PlaygroundsQuery {
     }
 }
 
-mutation CreateUserMutation($email: String!, $username: String!, $friendList: [FriendInput], $pendingRequests: [FriendRequestInput], $gamesSaved: [SavedGameInput]) {
+mutation CreateUserMutation($email: String!, $username: String!, $friendList: [FriendInput], $pendingRequests: [FriendRequestInput], $gamesSaved: [String]) {
   createUser(email: $email, username: $username, friendList: $friendList, pendingRequests: $pendingRequests, gamesSaved: $gamesSaved) {
     email
     username
@@ -40,9 +37,6 @@ mutation CreateUserMutation($email: String!, $username: String!, $friendList: [F
       sender
       username
     }
-    gamesSaved {
-      name
-      date
-    }
+    gamesSaved
   }
 }

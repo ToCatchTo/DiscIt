@@ -78,9 +78,6 @@ export const HeaderProfileButton = () => {
             <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'/profileDetail'}>Profil</Link>
           </MenuItem>
           <MenuItem sx={{ ...hover }}>
-            <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'#'}>Nastavení</Link>
-          </MenuItem>
-          <MenuItem sx={{ ...hover }}>
             <Link style={{ color: customColors.white, textDecoration: 'none' }} href={'/login'} onClick={handleLogout}>Odhlásit se</Link>
           </MenuItem>
         </Menu>
