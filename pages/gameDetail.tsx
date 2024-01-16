@@ -21,8 +21,9 @@ const GameDetail: NextPage = () => {
     const title = 'Detail hry';
     const perex = 'Lorem ipsum dolor sit amet, consectetuer adip iscing elit. Nullam Lorem ipsum dolor sit amet, consectetuer adip iscing elit. Nullam Lorem ipsum dolor sit amet, consectetuer.';
     const gameData = JSON.parse(localStorage.getItem('gameData') || '');
-    console.log(gameData.gameShotsList[0]);
     const [currentPlayground, setCurrentPlayground] = useState<Playground>({ holesNumber: 0, isPublic: true, name: "", length: 0, parSum: 0 });
+    const [shotStats, setShotStats] = useState<Array<gameShots>>([]);
+    const [pointSum, setPointSum] = useState<Array<number>>([]);
 
     const fetchData = async () => {
         const firestore = getFirestore();
@@ -37,6 +38,17 @@ const GameDetail: NextPage = () => {
         tempPlayground.parSum = playgroundQuery.docs[0].data().parSum;
 
         setCurrentPlayground(tempPlayground);
+        setShotStats(gameData.gameShotsList);
+
+        for (let index = 0; index < gameData.players.length; index++) {
+            pointSum.push(0);
+        }
+
+        for (let i = 0; i <= gameData.gameShotsList.length - 1; i++) {
+            for (let index = 0; index <= pointSum.length - 1; index++) {
+                pointSum[index] = pointSum[index] + gameData.gameShotsList[i].shots[index];
+            }
+        }
     }
 
     useEffect(() => {
@@ -107,7 +119,7 @@ const GameDetail: NextPage = () => {
                     {currentPlayground.isPublic ? "Veřejné" : "Soukromé"}
                 </Box>
             </Box>
-            <TableContainer component={Paper} sx={{
+            {shotStats.length > 0 ? (<TableContainer component={Paper} sx={{
                 backgroundColor: customColors.white, border: '2px solid ' + customColors.black, margin: '0 13%', width: '74%', mb: '120px',
                 [theme.breakpoints.down('sm')]: { width: '86%', margin: '0 7%', mb: '120px' }
             }}>
@@ -121,28 +133,39 @@ const GameDetail: NextPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {gameData.gameShotsList.map((row: Array<gameShots>, index: number) => (
+                        {gameData.gameShotsList.map((item: any, index: number) => (
                             <TableRow
                                 key={index}
-                                sx={{ '&:nth-child(odd)': { backgroundColor: customColors.lightBackground },'&:last-child td, &:last-child th': { border: 0 } }}
+                                sx={{ '&:nth-child(odd)': { backgroundColor: customColors.lightBackground }, '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row" sx={{ padding: '5px 10px' }}>
                                     Jamka {index + 1}
                                 </TableCell>
 
-                                {!row[index] || !row[index].shots ?
+                                {/* {!row[index] || !row[index].shots ?
                                     (gameData.players.map(() => (
                                         <TableCell sx={{ padding: '7px 10px' }}>0</TableCell>
                                     ))) :
                                     (row[index].shots.map((item: any, index: number) => (
                                         <TableCell sx={{ padding: '7px 10px' }}>{item[index]}</TableCell>
                                     )))
-                                }
+                                } */}
+                                {(shotStats[index].shots.map((item: any, i: number) => (
+                                    <TableCell sx={{ padding: '7px 10px' }}>{item}</TableCell>
+                                )))}
                             </TableRow>
                         ))}
+                        <TableRow sx={{backgroundColor: customColors.black, borderBottom: '2px solid ' + customColors.black}}>
+                                <TableCell component="th" scope="row" sx={{ padding: '5px 10px', color: customColors.white }}>
+                                    Součet
+                                </TableCell>
+                            {pointSum.map((item: number) => (
+                                <TableCell sx={{ padding: '7px 10px', color: customColors.white }}>{item}</TableCell>
+                            ))}
+                        </TableRow>
                     </TableBody>
                 </Table>
-            </TableContainer>
+            </TableContainer>) : <Typography>Načítání tabulky...</Typography>}
             <Box sx={{ position: 'fixed', bottom: '0', width: '100%' }}>
                 <Footer />
             </Box>

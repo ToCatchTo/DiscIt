@@ -24,8 +24,6 @@ const GamesList: NextPage = () => {
 
     let currentUserEmailDirty = localStorage.getItem('currentUserEmail');
     const currentUserEmail = (currentUserEmailDirty ?? "").slice(1, -1);
-    const [needToInitializeData, setNeedToInitializeData] = useState(true);
-    const [needToUpdateData, setNeedToUpdateData] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
     const [usersGames, setUsersGames] = useState<Array<SavedGame>>([]);
     let pageCount = Math.floor(usersGames.length / 6 + 1);
@@ -62,14 +60,14 @@ const GamesList: NextPage = () => {
         const firestore = getFirestore();
         const usersRef = collection(firestore, 'users');
         let currentUser = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
+        let newSavedGames = currentUser.docs[0].data().gamesSaved;
+        newSavedGames.splice(indexOfDelete, 1);
 
-        usersGames.splice(indexOfDelete, 1);
+        setUsersGames(usersGames.splice(indexOfDelete, 1));
 
         await updateDoc(doc(firestore, 'users', currentUser.docs[0].id), {
-            gamesSaved: usersGames,
+            gamesSaved: newSavedGames,
         });
-
-        setNeedToUpdateData(true);
     }
 
     const handleRedirect = (gameData: SavedGame) => {
@@ -92,7 +90,7 @@ const GamesList: NextPage = () => {
                         <Typography sx={{ color: customColors.black }}>Nemáš žádné uložené hry</Typography>
                     ) : (
                         usersGames.slice((currentPage - 1) * 10, 10 * currentPage).map((item: any, index: any) => (
-                            <Box component='button' onClick={() => handleRedirect(item)} style={{ width: '100%', textDecoration: 'none', border: 'none', backgroundColor: customColors.white }}>
+                            <Box onClick={() => handleRedirect(item)} style={{ width: '100%', textDecoration: 'none', border: 'none', backgroundColor: customColors.white }}>
                                 <Box key={index} sx={{
                                     width: '49.5%', height: 'auto', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                     [theme.breakpoints.down('lg')]: { width: '100%' }
@@ -111,8 +109,8 @@ const GamesList: NextPage = () => {
                                         }}>{item.date}</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                                        <DeleteIcon onClick={() => handleDelete(index)} sx={{
-                                            height: '45px', width: '45px', color: customColors.white, cursor: 'pointer',
+                                        <DeleteIcon onClick={(event) => {event.stopPropagation();handleDelete(index)}} sx={{
+                                            height: '45px', width: '45px', color: customColors.white, cursor: 'pointer', 
                                             [theme.breakpoints.down('sm')]: { height: '35px', width: '35px' }
                                         }} />
                                     </Box>
