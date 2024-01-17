@@ -16,7 +16,6 @@ const oAuthLink = () =>
   setContext(async ({ operationName }, { headers }) => {
     const user = authUtils.getCurrentUser() || null;
     const jwtToken = user ? await user.getIdToken() : null;
-    console.log("USER",user);
     return {
       headers: {
         ...headers,

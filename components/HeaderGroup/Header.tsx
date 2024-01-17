@@ -36,7 +36,6 @@ export const Header = () => {
         localStorage.setItem('loginState', 'false');
         authUtils.logout();
         router.push('/login');
-        console.log(isLoggedIn);
     };
 
     return (

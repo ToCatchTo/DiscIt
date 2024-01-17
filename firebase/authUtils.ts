@@ -12,7 +12,6 @@ export const authUtils = {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             router.push("/");
-            console.log("User logged in");
             isLoggedIn = true;
             return true;
         } catch (error : any) {
