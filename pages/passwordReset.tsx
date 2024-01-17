@@ -26,8 +26,21 @@ const PasswordReset: NextPage = () => {
     const auth = getAuth();
 
     const triggerResetEmail = async () => {
-        await sendPasswordResetEmail(auth, email);
-        console.log("Password reset email sent")
+        try {
+            await sendPasswordResetEmail(auth, email);
+            alert("Email na obnovení hesla byl zaslán na zadaný email.");
+        } catch (error : any) {
+            switch (error.code) {
+                case "auth/invalid-email":
+                    alert("Špatně zadaný email. Email musí být v tomto formátu: jan@novotny.cz");
+                    break;
+                case "auth/user-not-found":
+                    alert("Uživatel nenalezen.");
+                    break;
+                default:
+                    alert("Nečekaný error :c : " + error.message);
+            }
+        }
     }
 
     const handleForm = async (event: FormEvent<HTMLFormElement>) => {

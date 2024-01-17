@@ -45,6 +45,13 @@ const Friends: NextPage = () => {
     const getFriends = async () => {
         const firestore = getFirestore();
         usersRef = collection(firestore, 'users');
+
+        const unsubscribe = onSnapshot(usersRef, (querySnapshot) => {
+            querySnapshot.forEach(() => {
+                setNeedToUpdate(true);
+            });
+        });
+
         let result = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
         let currentUserData = result.docs[0].data();
         const currentUserFriendList = currentUserData.friendList;
@@ -73,7 +80,6 @@ const Friends: NextPage = () => {
     useEffect(() => {
         const fetchFriends = async () => {
             if (needToUpdate) {
-                console.log("Fetching...");
                 friends = (await getFriends()).newFriendList;
                 requests = (await getFriends()).currentUserRequestList;
                 setNeedToUpdate(false);
@@ -83,11 +89,7 @@ const Friends: NextPage = () => {
             }
         };
 
-        const intervalId = setInterval(() => {
-            fetchFriends();
-        }, 500);
-
-        return () => clearInterval(intervalId);
+        fetchFriends();
 
     }, [needToUpdate, currentPage]);
 
@@ -118,7 +120,7 @@ const Friends: NextPage = () => {
         let targetUser = await getDocs(query(usersRef, where("username", "==", targetUsername)));
         let currentUser = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
 
-        if (targetUser.docs.length > 0) {
+        if (targetUser.docs.length > 0 && currentUser.docs[0].data().username != targetUsername) {
             let userId: string = targetUser.docs[0].id;
             let pendingRequests: Array<friendRequest> = targetUser.docs[0].data().pendingRequests;
             let friendRequest: friendRequest = { sender: "", state: "", username: "" };
@@ -132,9 +134,13 @@ const Friends: NextPage = () => {
             });
             setRequestList(pendingRequests);
             setNeedToUpdate(true);
+            alert("Žádost odeslána.");
+        }
+        else if(currentUser.docs[0].data().username == targetUsername) {
+            alert("Do přátel si nemůžete přidat sám sebe.");
         }
         else {
-            alert("Uživatel nenalezen.");
+            alert("Uživatel nenalezen. Prosím zadávejte jméno uživatele.");
         }
     }
 

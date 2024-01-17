@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { CollectionReference, DocumentData, Firestore, collection, doc, getDoc, getDocs, getFirestore, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { Friend, SavedGame, friendRequest } from './api/graphql';
+import { Friend, SavedGame, friendRequest, gameShots } from './api/graphql';
 import { WidthFull } from '@mui/icons-material';
 
 const GamesList: NextPage = () => {
@@ -44,7 +44,6 @@ const GamesList: NextPage = () => {
 
             if (gameDoc.exists()) {
                 game = gameDoc.data();
-                console.log(game);
                 gamesList.push({ date: game.date, playground: game.playground, gameShotsList: game.gameShotsList, players: game.players });
             }
 
@@ -59,14 +58,34 @@ const GamesList: NextPage = () => {
     const handleDelete = async (indexOfDelete: number) => {
         const firestore = getFirestore();
         const usersRef = collection(firestore, 'users');
+        const savedGamesRef = await getDocs(collection(firestore, 'savedGames'));
         let currentUser = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
         let newSavedGames = currentUser.docs[0].data().gamesSaved;
-        newSavedGames.splice(indexOfDelete, 1);
+        let tempList: Array<string> = [];
+        let finalList: Array<SavedGame> = [];
 
-        setUsersGames(usersGames.splice(indexOfDelete, 1));
+        newSavedGames.forEach((item: any, index: number) => {
+            if(index != indexOfDelete) {
+                tempList.push(item);
+            }
+            else {
+                
+            }
+        })
+
+        for (let index = 0; index < savedGamesRef.docs.length; index++) {
+            let tempGame = savedGamesRef.docs[index].data();
+            tempList.forEach((element, i) => {
+                if(savedGamesRef.docs[index].id == element.split('/savedGames/')[1]) {
+                    finalList.push({date: tempGame.date, playground: tempGame.playground, gameShotsList: tempGame.gameShotsList, players: tempGame.players});
+                }
+            })
+        }
+        
+        setUsersGames(finalList);
 
         await updateDoc(doc(firestore, 'users', currentUser.docs[0].id), {
-            gamesSaved: newSavedGames,
+            gamesSaved: tempList,
         });
     }
 
@@ -74,6 +93,13 @@ const GamesList: NextPage = () => {
         localStorage.setItem('gameData', JSON.stringify(gameData));
         router.push("/gameDetail");
     }
+
+    const buttonHoverDark = {
+        "&:hover": {
+            backgroundColor: customColors.black,
+            color: customColors.white
+        },
+    };
     
     const theme: any = useTheme();
 
@@ -118,7 +144,10 @@ const GamesList: NextPage = () => {
                             </Box>
                         )))}
                 </Box>
-                <Pagination sx={{ mt: '30px', mb: '80px' }} count={pageCount} />
+                <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', mb: '80px', height: '50px', alignItems: 'center', width: '100%', mt: '20px'}}>
+                    <Pagination count={pageCount} />
+                    <Button href="/lobby" sx={{backgroundColor: customColors.black, color: customColors.white, padding: '5px 20px', ...buttonHoverDark }}>HRÁT</Button>
+                </Box>
             </Box>
             <Box sx={{ position: 'fixed', bottom: '0', width: '100%' }}>
                 <Footer />

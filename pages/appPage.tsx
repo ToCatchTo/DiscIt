@@ -24,7 +24,7 @@ const AppPage: NextPage = () => {
   const [throwsList, setThrowsList] = useState<Array<number>>([]);
   const [numberOfShots, setNumberOfShots] = useState(0);
   const [currentHole, setCurrentHole] = useState(0);
-  const [parNumber, setParNumber] = useState("");
+  const [parNumber, setParNumber] = useState("0");
   const [windowOpened, setWindowOpened] = useState(false);
   const router = useRouter();
   let nameList: Array<string> = [];
@@ -102,7 +102,6 @@ const AppPage: NextPage = () => {
   const handleShots = (operation: string) => {
     if (operation === "add") {
       setNumberOfShots(numberOfShots + 1);
-      console.log(numberOfShots);
     }
     else {
       setNumberOfShots(numberOfShots - 1);
@@ -110,18 +109,17 @@ const AppPage: NextPage = () => {
   }
 
   const handleRoundSave = () => {
-    console.log(parNumber);
-
     for (let i = 0; i <= throwsList.length - 1; i++) {
+      if(parNumber == undefined) {
+        setParNumber("0");
+      }
       throwsList[i] = throwsList[i] - parseInt(parNumber);
     }
 
-    console.log(throwsList);
     gameShotsList[currentHole] = {shots: throwsList};
     setCurrentHole(currentHole + 1);
     setThrowsList(Array(throwsList.length).fill(0));
     setNumberOfShots(0);
-    console.log(gameShotsList);
   }
 
   const handleTextFieldChange = (event: any) => {
