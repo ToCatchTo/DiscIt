@@ -65,23 +65,23 @@ const GamesList: NextPage = () => {
         let finalList: Array<SavedGame> = [];
 
         newSavedGames.forEach((item: any, index: number) => {
-            if(index != indexOfDelete) {
+            if (index != indexOfDelete) {
                 tempList.push(item);
             }
             else {
-                
+
             }
         })
 
         for (let index = 0; index < savedGamesRef.docs.length; index++) {
             let tempGame = savedGamesRef.docs[index].data();
             tempList.forEach((element, i) => {
-                if(savedGamesRef.docs[index].id == element.split('/savedGames/')[1]) {
-                    finalList.push({date: tempGame.date, playground: tempGame.playground, gameShotsList: tempGame.gameShotsList, players: tempGame.players});
+                if (savedGamesRef.docs[index].id == element.split('/savedGames/')[1]) {
+                    finalList.push({ date: tempGame.date, playground: tempGame.playground, gameShotsList: tempGame.gameShotsList, players: tempGame.players });
                 }
             })
         }
-        
+
         setUsersGames(finalList);
 
         await updateDoc(doc(firestore, 'users', currentUser.docs[0].id), {
@@ -100,7 +100,7 @@ const GamesList: NextPage = () => {
             color: customColors.white
         },
     };
-    
+
     const theme: any = useTheme();
 
     return (
@@ -111,18 +111,21 @@ const GamesList: NextPage = () => {
                 display: 'flex', padding: generalVariables.contentPadding, mt: '30px', flexWrap: 'wrap',
                 [theme.breakpoints.down('md')]: { padding: '0 7%' }
             }}>
-                <Box sx={{ display: "flex", flexWrap: 'wrap', columnGap: '1%', rowGap: '15px', mt: '20px', width: '100%' }}>
+                <Box sx={{
+                    display: "flex", flexWrap: 'wrap', columnGap: '1%', rowGap: '15px', mt: '20px', width: '100%'
+                }}>
                     {usersGames.length == 0 ? (
                         <Typography sx={{ color: customColors.black }}>Nemáš žádné uložené hry</Typography>
                     ) : (
                         usersGames.slice((currentPage - 1) * 10, 10 * currentPage).map((item: any, index: any) => (
-                            <Box onClick={() => handleRedirect(item)} style={{ width: '100%', textDecoration: 'none', border: 'none', backgroundColor: customColors.white }}>
+                            <Box onClick={() => handleRedirect(item)} style={{
+                                width: '100%', textDecoration: 'none', border: 'none', backgroundColor: customColors.white,
+                            }}>
                                 <Box key={index} sx={{
-                                    width: '49.5%', height: 'auto', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    [theme.breakpoints.down('lg')]: { width: '100%' }
+                                    width: '100%', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%'
                                 }}>
                                     <Box sx={{
-                                        display: 'flex', gap: '20px',
+                                        display: 'flex', gap: '20px', alignItems: 'center',
                                         [theme.breakpoints.down('sm')]: { flexDirection: 'column', gap: '0px' }
                                     }}>
                                         <Typography sx={{
@@ -135,8 +138,8 @@ const GamesList: NextPage = () => {
                                         }}>{item.date}</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                                        <DeleteIcon onClick={(event) => {event.stopPropagation();handleDelete(index)}} sx={{
-                                            height: '45px', width: '45px', color: customColors.white, cursor: 'pointer', 
+                                        <DeleteIcon onClick={(event) => { event.stopPropagation(); handleDelete(index) }} sx={{
+                                            height: '45px', width: '45px', color: customColors.white, cursor: 'pointer',
                                             [theme.breakpoints.down('sm')]: { height: '35px', width: '35px' }
                                         }} />
                                     </Box>
@@ -144,15 +147,15 @@ const GamesList: NextPage = () => {
                             </Box>
                         )))}
                 </Box>
-                <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', mb: '80px', height: '50px', alignItems: 'center', width: '100%', mt: '20px'}}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', mb: '80px', height: '50px', alignItems: 'center', width: '100%', mt: '20px' }}>
                     <Pagination count={pageCount} />
-                    <Button href="/lobby" sx={{backgroundColor: customColors.black, color: customColors.white, padding: '5px 20px', ...buttonHoverDark }}>HRÁT</Button>
+                    <Button href="/lobby" sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '5px 20px', ...buttonHoverDark }}>HRÁT</Button>
                 </Box>
             </Box>
             <Box sx={{ position: 'fixed', bottom: '0', width: '100%' }}>
                 <Footer />
             </Box>
-        </Box>
+        </Box >
     );
 };
 

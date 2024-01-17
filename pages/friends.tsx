@@ -89,7 +89,9 @@ const Friends: NextPage = () => {
             }
         };
 
+        console.log(friendList);
         fetchFriends();
+        console.log(friendList);
 
     }, [needToUpdate, currentPage]);
 
@@ -193,7 +195,7 @@ const Friends: NextPage = () => {
             let currentUsername = (await getDocs(query(usersRef, where("email", "==", currentUserEmail)))).docs[0].data().username;
 
             senderFriendList.push({ email: currentUserEmail, username: currentUsername });
-
+            console.log(senderFriendList);
             await updateDoc(doc(firestore, 'users', sender), {
                 friendList: senderFriendList
             });

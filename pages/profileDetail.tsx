@@ -41,13 +41,7 @@ const Friends: NextPage = () => {
                 setNeedToInitializeData(false);
             }
         };
-
-        const intervalId = setInterval(() => {
-            fetchData();
-        }, 1000);
-
-        return () => clearInterval(intervalId);
-
+        fetchData();
     }, [needToInitializeData]);
 
     const theme: any = useTheme();
@@ -57,7 +51,7 @@ const Friends: NextPage = () => {
             <Header></Header>
             <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/banner-background.jpg'} imgBg={false} />
             <Box sx={{
-                display: 'flex', padding: generalVariables.contentPadding, mt: '30px',
+                display: 'flex', padding: generalVariables.contentPadding, mt: '30px', mb: '60px',
                 [theme.breakpoints.down('sm')]: { flexDirection: 'column', alignItems: 'center'},
                 [theme.breakpoints.down('md')]: { padding: '0 7%' },
             }}>
@@ -79,7 +73,7 @@ const Friends: NextPage = () => {
                     <Typography fontSize='22px'><b>Počet uložených her: </b> {currentGames} </Typography>
                 </Box>
             </Box>
-            <Box sx={{ pt: '30px', position: 'absolute', bottom: '0', width: '100%' }}>
+            <Box sx={{ pt: '30px', width: '100%' }}>
                 <Footer />
             </Box>
         </Box>
