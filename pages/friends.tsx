@@ -29,12 +29,14 @@ const Friends: NextPage = () => {
     const [loadingFriends, setLoadingFriends] = useState(true);
     const [addFriendWindowOpened, setWindowdOpen] = useState(false);
     const [requestsWindowOpened, setWindowOpen] = useState(false);
+    const [deleteWindowOpened, setDeleteWindowOpened] = useState(false);
     let pageCount = Math.floor(friendList.length / 6 + 1);
     const [textFieldValue, setTextFieldValue] = useState("");
     let friends: Array<Friend> = [];
     const [needToUpdate, setNeedToUpdate] = useState(true);
-    const [dataUpdate, setDataUpdate] = useState(false);
+    const [dataInitialize, setDataInitialize] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isButtonClicked, setIsButtonClicked] = useState(false);
     let requests: Array<friendRequest> = [];
     let usersRef: CollectionReference<DocumentData>;
 
@@ -57,30 +59,13 @@ const Friends: NextPage = () => {
         const currentUserFriendList = currentUserData.friendList;
         let currentUserRequestList = currentUserData.pendingRequests;
 
-        let newFriendList: Array<Friend> = [];
-
-        if (dataUpdate) {
-            newFriendList = friendList;
-            currentUserRequestList = requestList;
-            setDataUpdate(false);
-        }
-        else {
-            for (const item of currentUserFriendList) {
-                result = await getDocs(query(usersRef, where("email", "==", item.email)));
-                newFriendList.push({
-                    username: result.docs[0].data().username,
-                    email: result.docs[0].data().email,
-                });
-            }
-        }
-
-        return { newFriendList, currentUserRequestList };
+        return { currentUserFriendList, currentUserRequestList };
     };
 
     useEffect(() => {
         const fetchFriends = async () => {
             if (needToUpdate) {
-                friends = (await getFriends()).newFriendList;
+                friends = (await getFriends()).currentUserFriendList;
                 requests = (await getFriends()).currentUserRequestList;
                 setNeedToUpdate(false);
                 setFriendList(friends);
@@ -89,17 +74,15 @@ const Friends: NextPage = () => {
             }
         };
 
-        console.log(friendList);
         fetchFriends();
         console.log(friendList);
-
-    }, [needToUpdate, currentPage]);
+    }, [currentPage, needToUpdate]);
 
     const handleDelete = async (targetUserEmail: any, currentUserEmail: any) => {
         let indexOfDelete = 0;
         const firestore = getFirestore();
         const usersRef = collection(firestore, 'users');
-        let result = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
+        let currentUserQuery = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
 
         friendList.forEach((user: any, index: any) => {
             if (user.email === targetUserEmail) {
@@ -109,7 +92,7 @@ const Friends: NextPage = () => {
 
         friendList.splice(indexOfDelete, 1);
 
-        await updateDoc(doc(firestore, 'users', result.docs[0].id), {
+        await updateDoc(doc(firestore, 'users', currentUserQuery.docs[0].id), {
             friendList: friendList,
         });
 
@@ -121,8 +104,15 @@ const Friends: NextPage = () => {
         const usersRef = collection(firestore, 'users');
         let targetUser = await getDocs(query(usersRef, where("username", "==", targetUsername)));
         let currentUser = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
+        let alreadyFriended = false;
 
-        if (targetUser.docs.length > 0 && currentUser.docs[0].data().username != targetUsername) {
+        friendList.forEach((friend: any) => {
+            if (friend.username == targetUsername) {
+                alreadyFriended = true;
+            }
+        })
+
+        if (targetUser.docs.length > 0 && currentUser.docs[0].data().username != targetUsername && !alreadyFriended) {
             let userId: string = targetUser.docs[0].id;
             let pendingRequests: Array<friendRequest> = targetUser.docs[0].data().pendingRequests;
             let friendRequest: friendRequest = { sender: "", state: "", username: "" };
@@ -138,8 +128,11 @@ const Friends: NextPage = () => {
             setNeedToUpdate(true);
             alert("Žádost odeslána.");
         }
-        else if(currentUser.docs[0].data().username == targetUsername) {
+        else if (currentUser.docs[0].data().username == targetUsername) {
             alert("Do přátel si nemůžete přidat sám sebe.");
+        }
+        else if (alreadyFriended) {
+            alert("Každého uživatele můžeš mít v přátelích jen jednou");
         }
         else {
             alert("Uživatel nenalezen. Prosím zadávejte jméno uživatele.");
@@ -164,7 +157,17 @@ const Friends: NextPage = () => {
         }
     }
 
+    const handleDeleteWindowAppear = () => {
+        if (requestsWindowOpened) {
+            setWindowOpen(false);
+        }
+        else {
+            setWindowOpen(true);
+        }
+    }
+
     const handleRequest = async (index: number, isAccepted: boolean) => {
+        setIsButtonClicked(true);
         const firestore = getFirestore();
         const usersRef = collection(firestore, 'users');
         let sender = (await getDocs(query(usersRef, where("email", "==", currentUserEmail)))).docs[0].data().pendingRequests[index].sender;
@@ -188,14 +191,12 @@ const Friends: NextPage = () => {
 
         if (isAccepted) {
             newFriendList.push({ email: senderEmail, username: senderUsername });
-            setFriendList(newFriendList);
             setRequestList(newRequestList);
 
             let senderFriendList = (await getDocs(query(usersRef, where("email", "==", senderEmail)))).docs[0].data().friendList;
             let currentUsername = (await getDocs(query(usersRef, where("email", "==", currentUserEmail)))).docs[0].data().username;
 
-            senderFriendList.push({ email: currentUserEmail, username: currentUsername });
-            console.log(senderFriendList);
+            senderFriendList.push({ email: currentUserEmail, username: currentUsername })
             await updateDoc(doc(firestore, 'users', sender), {
                 friendList: senderFriendList
             });
@@ -209,11 +210,25 @@ const Friends: NextPage = () => {
             friendList: newFriendList
         });
 
-        setDataUpdate(true);
+        setFriendList(newFriendList);
         setNeedToUpdate(true);
     }
 
-    const openDialongBtn = {
+    const openDialongAcceptBtn = {
+        "&:hover": {
+            backgroundColor: '#66b266',
+            color: customColors.black
+        },
+    };
+
+    const openDialongDeclineBtn = {
+        "&:hover": {
+            backgroundColor: '#ff4c4c',
+            color: customColors.black
+        },
+    };
+
+    const hoverDarker = {
         "&:hover": {
             backgroundColor: customColors.lightBackground,
             color: customColors.black
@@ -236,7 +251,7 @@ const Friends: NextPage = () => {
                 display: 'flex', padding: generalVariables.contentPadding, mt: '30px',
                 [theme.breakpoints.down('md')]: { padding: '0 7%' }
             }}>
-                <Button sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '10px', borderRadius: '10px', ...openDialongBtn }} onClick={handleRequestsWindowAppear}>Žádosti o přátelství</Button>
+                <Button sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '10px', borderRadius: '10px', ...hoverDarker }} onClick={handleRequestsWindowAppear}>Žádosti o přátelství</Button>
                 <Dialog key={0} open={requestsWindowOpened} onClose={handleRequestsWindowAppear} fullWidth={true} maxWidth={'md'} PaperProps={{ sx: { borderRadius: '10px' } }} >
                     <Box sx={{
                         height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px',
@@ -257,8 +272,8 @@ const Friends: NextPage = () => {
                                             display: 'flex', gap: '30px',
                                             [theme.breakpoints.down('sm')]: { gap: '10px' }
                                         }}>
-                                            <Button sx={{ backgroundColor: 'green', color: customColors.black, ...openDialongBtn }} onClick={() => handleRequest(index, true)}>Přijmout</Button>
-                                            <Button sx={{ backgroundColor: 'red', color: customColors.black, ...openDialongBtn }} onClick={() => handleRequest(index, false)}>Odmítnout</Button>
+                                            <Button key={index} sx={{ backgroundColor: '#008000', color: customColors.black, ...openDialongAcceptBtn }} onClick={() => handleRequest(index, true)}>Přijmout</Button>
+                                            <Button key={index} sx={{ backgroundColor: '#ff0000', color: customColors.black, ...openDialongDeclineBtn }} onClick={() => handleRequest(index, false)}>Odmítnout</Button>
                                         </Box>
                                     </Box>
                                 )))}
@@ -309,11 +324,12 @@ const Friends: NextPage = () => {
                 [theme.breakpoints.down('md')]: { padding: '0 7%' }
             }}>
                 <Pagination count={pageCount} page={currentPage} onChange={(event, page) => setCurrentPage(page)} />
-                <Button sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '10px', borderRadius: '10px', ...openDialongBtn }} onClick={handleAddFriendWindowAppear}>Přidat přítele</Button>
+                <Button sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '10px', borderRadius: '10px', ...hoverDarker }} onClick={handleAddFriendWindowAppear}>Přidat přítele</Button>
                 <Dialog key={1} open={addFriendWindowOpened} onClose={handleAddFriendWindowAppear} fullWidth={true} maxWidth={'md'} PaperProps={{ sx: { borderRadius: '10px' } }} >
-                    <Box sx={{ height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px',
-                    [theme.breakpoints.down('sm')]: { padding: '20px' }
-                }}>
+                    <Box sx={{
+                        height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '40px', flexDirection: 'column', gap: '20px',
+                        [theme.breakpoints.down('sm')]: { padding: '20px' }
+                    }}>
                         <Typography sx={{ color: customColors.black, fontSize: '23px', fontWeight: 'bold' }}>Přidat přítele</Typography>
                         <TextField sx={{ backgroundColor: customColors.white, borderRadius: '4px' }} variant="outlined" label="Zadejte jméno uživatele" value={textFieldValue} onChange={handleTextFieldChange} />
                         <Button sx={{ backgroundColor: customColors.black, color: customColors.white, ...sendRequestBtn }} onClick={() => sendFriendRequest(textFieldValue)} >Poslat žádost</Button>
