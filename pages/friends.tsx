@@ -106,11 +106,21 @@ const Friends: NextPage = () => {
         let currentUser = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
         let alreadyFriended = false;
 
-        friendList.forEach((friend: any) => {
-            if (friend.username == targetUsername) {
+        targetUser.docs[0].data().pendingRequests.forEach((request: any) => {
+            if (request.username == currentUser.docs[0].data().username) {
                 alreadyFriended = true;
             }
         })
+
+        console.log(targetUser.docs[0].data().pendingRequests);
+
+        if (!alreadyFriended) {
+            friendList.forEach((friend: any) => {
+                if (friend.username == targetUsername) {
+                    alreadyFriended = true;
+                }
+            })
+        }
 
         if (targetUser.docs.length > 0 && currentUser.docs[0].data().username != targetUsername && !alreadyFriended) {
             let userId: string = targetUser.docs[0].id;
@@ -149,15 +159,6 @@ const Friends: NextPage = () => {
     }
 
     const handleRequestsWindowAppear = () => {
-        if (requestsWindowOpened) {
-            setWindowOpen(false);
-        }
-        else {
-            setWindowOpen(true);
-        }
-    }
-
-    const handleDeleteWindowAppear = () => {
         if (requestsWindowOpened) {
             setWindowOpen(false);
         }

@@ -1,7 +1,7 @@
 import { Header } from '@/components/HeaderGroup/Header';
 import { Banner } from '@/components/Banner';
 import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
-import { Box, Button, Dialog, DialogTitle, Pagination, TextField, ThemeProvider, Typography, useTheme } from '@mui/material';
+import { Box, Button, Dialog, DialogTitle, Hidden, Pagination, TextField, ThemeProvider, Typography, useTheme } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { NextPage } from 'next';
@@ -26,6 +26,7 @@ const GamesList: NextPage = () => {
     const currentUserEmail = (currentUserEmailDirty ?? "").slice(1, -1);
     const [currentPage, setCurrentPage] = useState(1);
     const [usersGames, setUsersGames] = useState<Array<SavedGame>>([]);
+    const [needToUpdate, setNeedToUpdate] = useState(false);
     let pageCount = Math.floor(usersGames.length / 6 + 1);
     let gamesList: Array<SavedGame> = [];
     const router = useRouter();
@@ -49,11 +50,14 @@ const GamesList: NextPage = () => {
 
             setUsersGames(gamesList);
         });
+
+        setNeedToUpdate(false);
     };
 
     useEffect(() => {
         fetchData();
-    }, []);
+        console.log("fetch");
+    }, [currentPage, needToUpdate]);
 
     const handleDelete = async (indexOfDelete: number) => {
         const firestore = getFirestore();
@@ -68,9 +72,6 @@ const GamesList: NextPage = () => {
             if (index != indexOfDelete) {
                 tempList.push(item);
             }
-            else {
-
-            }
         })
 
         for (let index = 0; index < savedGamesRef.docs.length; index++) {
@@ -83,6 +84,7 @@ const GamesList: NextPage = () => {
         }
 
         setUsersGames(finalList);
+        setNeedToUpdate(true);
 
         await updateDoc(doc(firestore, 'users', currentUser.docs[0].id), {
             gamesSaved: tempList,
@@ -119,7 +121,7 @@ const GamesList: NextPage = () => {
                     ) : (
                         usersGames.slice((currentPage - 1) * 10, 10 * currentPage).map((item: any, index: any) => (
                             <Box onClick={() => handleRedirect(item)} style={{
-                                width: '100%', textDecoration: 'none', border: 'none', backgroundColor: customColors.white,
+                                width: '100%', textDecoration: 'none', border: 'none', backgroundColor: customColors.white, cursor: 'pointer',
                             }}>
                                 <Box key={index} sx={{
                                     width: '100%', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%'
@@ -148,8 +150,10 @@ const GamesList: NextPage = () => {
                         )))}
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', mb: '80px', height: '50px', alignItems: 'center', width: '100%', mt: '20px' }}>
-                    <Pagination count={pageCount} />
-                    <Button href="/lobby" sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '5px 20px', ...buttonHoverDark }}>HRÁT</Button>
+                    <Pagination count={pageCount} page={currentPage} onChange={(event, page) => setCurrentPage(page)} />
+                    <Hidden mdUp>
+                        <Button href="/lobby" sx={{ backgroundColor: customColors.black, color: customColors.white, padding: '5px 20px', ...buttonHoverDark }}>HRÁT</Button>
+                    </Hidden>
                 </Box>
             </Box>
             <Box sx={{ position: 'fixed', bottom: '0', width: '100%' }}>

@@ -18,7 +18,7 @@ let currentPlayground: Playground = { holesNumber: 0, isPublic: true, name: "", 
 let gameShotsList: Array<gameShots> = [];
 
 const AppPage: NextPage = () => {
-  const lobbyList: string= localStorage.getItem('lobbyList') || '';
+  const lobbyList: string = localStorage.getItem('lobbyList') || '';
   const selectedPlayground = localStorage.getItem('selectedPlayground');
   let playersList: Array<Player> = [];
   const [throwsList, setThrowsList] = useState<Array<number>>([]);
@@ -58,7 +58,7 @@ const AppPage: NextPage = () => {
         tempList.push(0);
       }
 
-      gameShotsList.push({shots: tempList});
+      gameShotsList.push({ shots: tempList });
     }
   }
 
@@ -109,17 +109,27 @@ const AppPage: NextPage = () => {
   }
 
   const handleRoundSave = () => {
-    for (let i = 0; i <= throwsList.length - 1; i++) {
-      if(parNumber == undefined) {
-        setParNumber("0");
-      }
-      throwsList[i] = throwsList[i] - parseInt(parNumber);
+    if (parNumber === undefined || parNumber == "" || parNumber == "0") {
+      alert("Prosím zadejte PAR, který je na této jamce");
     }
+    else {
+      for (let i = 0; i <= throwsList.length - 1; i++) {
+        console.log(throwsList[i]);
+        console.log(parNumber);
+        throwsList[i] = throwsList[i] - parseInt(parNumber);
+        console.log(throwsList[i]);
+      }
 
-    gameShotsList[currentHole] = {shots: throwsList};
-    setCurrentHole(currentHole + 1);
-    setThrowsList(Array(throwsList.length).fill(0));
-    setNumberOfShots(0);
+      gameShotsList[currentHole] = { shots: throwsList };
+      if (currentHole + 1 === currentPlayground.holesNumber) {
+        alert("Toto je poslední jamka, prosím ukončete hru");
+      }
+      else {
+        setCurrentHole(currentHole + 1);
+        setThrowsList(Array(throwsList.length).fill(0));
+        setNumberOfShots(0);
+      }
+    }
   }
 
   const handleTextFieldChange = (event: any) => {
@@ -140,13 +150,13 @@ const AppPage: NextPage = () => {
   }
 
   const handleSaveGame = async (saveGame: boolean) => {
-    if(saveGame) {
+    if (saveGame) {
       const firestore = getFirestore();
       const usersRef = collection(firestore, 'users');
       const savedGamesRef = collection(firestore, 'savedGames');
 
       const currentDate = (new Date().getDate() + "." + (new Date().getMonth() + 1) + "/" + new Date().getFullYear()).toString();
-      let currentGameStats: SavedGame = {date: currentDate, playground: (selectedPlayground ?? "").slice(1, -1), gameShotsList: gameShotsList, players: nameList};
+      let currentGameStats: SavedGame = { date: currentDate, playground: (selectedPlayground ?? "").slice(1, -1), gameShotsList: gameShotsList, players: nameList };
       const docRef = await addDoc(savedGamesRef, currentGameStats);
 
       playersList.forEach(async (item) => {
@@ -187,7 +197,7 @@ const AppPage: NextPage = () => {
     <Box>
       <Header></Header>
       <Box sx={{ display: 'flex', flexDirection: 'column', padding: '7%', gap: '10px', mb: '60px' }}>
-        <Typography fontSize='24px' fontWeight='bold' textAlign='center'>Jamka {currentHole}</Typography>
+        <Typography fontSize='24px' fontWeight='bold' textAlign='center'>Jamka {currentHole + 1}</Typography>
         <Box sx={{ display: 'flex', flexDirection: 'row', columnGap: '10px' }}>
           <Box sx={{ display: 'flex', width: '100%', flexDirection: 'column' }}>
             <Typography fontWeight='bold'>Hraje:</Typography>
@@ -269,10 +279,10 @@ const AppPage: NextPage = () => {
             justifyContent: 'center', flexDirection: 'column', alignItems: 'center',
             [theme.breakpoints.down('sm')]: { padding: '15px', alignItems: 'center' },
           }}>
-            <Typography color={customColors.black} sx={{textAlign: 'center'}}>Chcete si odehranou hru uložit?</Typography>
+            <Typography color={customColors.black} sx={{ textAlign: 'center' }}>Chcete si odehranou hru uložit?</Typography>
             <Box sx={{
               width: '100%', display: 'flex', gap: '10px',
-              [theme.breakpoints.down('sm')]: { flexDirection: 'column', alignItems: 'center'}
+              [theme.breakpoints.down('sm')]: { flexDirection: 'column', alignItems: 'center' }
             }}>
               <Button onClick={() => handleSaveGame(true)} sx={{
                 backgroundColor: customColors.black, color: customColors.white, width: '50%', ...buttonHoverDark,
