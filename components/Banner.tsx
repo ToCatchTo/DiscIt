@@ -53,7 +53,7 @@ export const Banner: FC<Props> = (props) => {
                         <Box sx={{ height: '2px', width: '55%', backgroundColor: customColors.white }}>
                         </Box>
                         <Typography sx={{
-                            color: customColors.white, fontWeight: 400, maxWidth: '80%',
+                            color: customColors.white, fontWeight: 400, maxWidth: '55%',
                             [theme.breakpoints.down('md')]: { fontSize: '18px' },
                             [theme.breakpoints.up('md')]: { fontSize: '26px' },
                         }}>

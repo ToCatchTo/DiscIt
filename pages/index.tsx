@@ -12,7 +12,7 @@ const Index: NextPage = () => {
   const hrefArray = ['/'];
   const fileLevel = 1;
   const title = 'Váš partner pro hru';
-  const perex = 'Lorem ipsum dolor sit amet, consectetuer adip iscing elit. Nullam Lorem ipsum dolor sit amet, consectetuer adip iscing elit. Nullam Lorem ipsum dolor sit amet, consectetuer.';
+  const perex = 'Cože to vlastně discgolf je? Toto je otázka, kterou si možná mnohá z vás klade, tak na této stránce se dozvíte o tomto krásném sportu všechno co potřebujete vědět. Ti, kteří už discgolf znají tak si tu taky mohou přijít na své s aplikací na hraní.';
 
   return (
     <Box>
