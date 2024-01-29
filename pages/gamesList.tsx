@@ -56,7 +56,6 @@ const GamesList: NextPage = () => {
 
     useEffect(() => {
         fetchData();
-        console.log("fetch");
     }, [currentPage, needToUpdate]);
 
     const handleDelete = async (indexOfDelete: number) => {
@@ -119,7 +118,7 @@ const GamesList: NextPage = () => {
                     {usersGames.length == 0 ? (
                         <Typography sx={{ color: customColors.black }}>Nemáš žádné uložené hry</Typography>
                     ) : (
-                        usersGames.slice((currentPage - 1) * 10, 10 * currentPage).map((item: any, index: any) => (
+                        usersGames.slice((currentPage - 1) * 6, 6 * currentPage).map((item: any, index: any) => (
                             <Box onClick={() => handleRedirect(item)} style={{
                                 width: '100%', textDecoration: 'none', border: 'none', backgroundColor: customColors.white, cursor: 'pointer',
                             }}>

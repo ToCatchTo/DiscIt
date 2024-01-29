@@ -75,7 +75,6 @@ const Friends: NextPage = () => {
         };
 
         fetchFriends();
-        console.log(friendList);
     }, [currentPage, needToUpdate]);
 
     const handleDelete = async (targetUserEmail: any, currentUserEmail: any) => {
