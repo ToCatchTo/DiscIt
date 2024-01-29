@@ -27,16 +27,22 @@ const GamesList: NextPage = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [usersGames, setUsersGames] = useState<Array<SavedGame>>([]);
     const [needToUpdate, setNeedToUpdate] = useState(false);
+    const [dataInitialize, setDataInitialize] = useState(true);
+    const [loading, setLoading] = useState(true);
     let pageCount = Math.floor(usersGames.length / 6 + 1);
     let gamesList: Array<SavedGame> = [];
     const router = useRouter();
 
-    const fetchData = async () => {
+    const getGames = async () => {
         const firestore = getFirestore();
         const usersRef = collection(firestore, 'users');
         const currentUser = (await getDocs(query(usersRef, where("email", "==", currentUserEmail))));
 
-        currentUser.docs[0].data().gamesSaved.forEach(async (item: string) => {
+        if(gamesList.length > 0) {
+            setLoading(false);
+        }
+
+        await currentUser.docs[0].data().gamesSaved.forEach(async (item: string) => {
             let pathParts = item.split("/savedGames/");
             let gameId = pathParts[1];
             const savedGamesRef = doc(firestore, 'savedGames', gameId);
@@ -46,16 +52,20 @@ const GamesList: NextPage = () => {
             if (gameDoc.exists()) {
                 game = gameDoc.data();
                 gamesList.push({ date: game.date, playground: game.playground, gameShotsList: game.gameShotsList, players: game.players });
+                setUsersGames(gamesList);
             }
-
-            setUsersGames(gamesList);
         });
-
-        setNeedToUpdate(false);
     };
 
     useEffect(() => {
-        fetchData();
+        const fetchData = async () => {
+            await getGames();
+        };
+
+        if(dataInitialize) {
+            fetchData();
+            setDataInitialize(false);
+        }
     }, [currentPage, needToUpdate]);
 
     const handleDelete = async (indexOfDelete: number) => {
@@ -115,38 +125,39 @@ const GamesList: NextPage = () => {
                 <Box sx={{
                     display: "flex", flexWrap: 'wrap', columnGap: '1%', rowGap: '15px', mt: '20px', width: '100%'
                 }}>
-                    {usersGames.length == 0 ? (
-                        <Typography sx={{ color: customColors.black }}>Nemáš žádné uložené hry</Typography>
-                    ) : (
-                        usersGames.slice((currentPage - 1) * 6, 6 * currentPage).map((item: any, index: any) => (
-                            <Box onClick={() => handleRedirect(item)} style={{
-                                width: '100%', textDecoration: 'none', border: 'none', backgroundColor: customColors.white, cursor: 'pointer',
-                            }}>
-                                <Box key={index} sx={{
-                                    width: '100%', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%'
+                    {
+                        usersGames.length == 0 ? (
+                            <Typography sx={{ color: customColors.black }}>Nemáš žádné uložené hry</Typography>
+                        ) : (
+                            usersGames.slice((currentPage - 1) * 6, 6 * currentPage).map((item: any, index: any) => (
+                                <Box onClick={() => handleRedirect(item)} style={{
+                                    width: '100%', textDecoration: 'none', border: 'none', backgroundColor: customColors.white, cursor: 'pointer',
                                 }}>
-                                    <Box sx={{
-                                        display: 'flex', gap: '20px', alignItems: 'center',
-                                        [theme.breakpoints.down('sm')]: { flexDirection: 'column', gap: '0px' }
+                                    <Box key={index} sx={{
+                                        width: '100%', backgroundColor: customColors.black, borderRadius: '10px', padding: '15px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '100%'
                                     }}>
-                                        <Typography sx={{
-                                            color: customColors.white, fontSize: '25px', fontWeight: '500', textAlign: 'start',
-                                            [theme.breakpoints.down('sm')]: { fontSize: '16px' }
-                                        }}>{item.playground}</Typography>
-                                        <Typography sx={{
-                                            color: customColors.white, fontSize: '25px', fontWeight: '500', textAlign: 'start',
-                                            [theme.breakpoints.down('sm')]: { fontSize: '16px' }
-                                        }}>{item.date}</Typography>
-                                    </Box>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                                        <DeleteIcon onClick={(event) => { event.stopPropagation(); handleDelete(index) }} sx={{
-                                            height: '45px', width: '45px', color: customColors.white, cursor: 'pointer',
-                                            [theme.breakpoints.down('sm')]: { height: '35px', width: '35px' }
-                                        }} />
+                                        <Box sx={{
+                                            display: 'flex', gap: '20px', alignItems: 'center',
+                                            [theme.breakpoints.down('sm')]: { flexDirection: 'column', gap: '0px' }
+                                        }}>
+                                            <Typography sx={{
+                                                color: customColors.white, fontSize: '25px', fontWeight: '500', textAlign: 'start',
+                                                [theme.breakpoints.down('sm')]: { fontSize: '16px' }
+                                            }}>{item.playground}</Typography>
+                                            <Typography sx={{
+                                                color: customColors.white, fontSize: '25px', fontWeight: '500', textAlign: 'start',
+                                                [theme.breakpoints.down('sm')]: { fontSize: '16px' }
+                                            }}>{item.date}</Typography>
+                                        </Box>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                                            <DeleteIcon onClick={(event) => { event.stopPropagation(); handleDelete(index) }} sx={{
+                                                height: '45px', width: '45px', color: customColors.white, cursor: 'pointer',
+                                                [theme.breakpoints.down('sm')]: { height: '35px', width: '35px' }
+                                            }} />
+                                        </Box>
                                     </Box>
                                 </Box>
-                            </Box>
-                        )))}
+                            )))}
                 </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', mb: '80px', height: '50px', alignItems: 'center', width: '100%', mt: '20px' }}>
                     <Pagination count={pageCount} page={currentPage} onChange={(event, page) => setCurrentPage(page)} />
