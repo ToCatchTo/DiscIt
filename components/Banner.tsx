@@ -23,13 +23,15 @@ export const Banner: FC<Props> = (props) => {
         imgBg ?
             <Box sx={{
                 width: '100%',
-                [theme.breakpoints.down('md')]: { height: '50vh' },
+                [theme.breakpoints.down('md')]: { height: '65vh' },
                 [theme.breakpoints.up('md')]: { height: '100vh' },
+                [theme.breakpoints.down(400)]: { height: '70vh' },
             }}>
                 <Box sx={{
                     width: '100%', overflow: 'hidden', position: 'absolute', top: 0, zIndex: -1,
-                    [theme.breakpoints.down('md')]: { height: '60%' },
-                    [theme.breakpoints.up('md')]: { height: '100%' },
+                    [theme.breakpoints.down('md')]: { height: '85%' },
+                    [theme.breakpoints.up('md')]: { height: '110%' },
+                    [theme.breakpoints.down(400)]: { height: '92%' },
                 }}>
                     <Hidden mdDown>
                         <Box sx={{ zIndex: 0, mt: '30px', ml: '13%', position: 'absolute', top: '10%' }}>
@@ -39,7 +41,7 @@ export const Banner: FC<Props> = (props) => {
                     <Box component='img' sx={{ width: '100%', height: '100%', objectFit: 'cover' }} alt='Banner obrázek' src={picturePath}>
                     </Box>
                     <Box sx={{
-                        display: 'flex', rowGap: '15px', flexDirection: 'column', position: 'absolute', padding: '0 13%', top: '40%',
+                        display: 'flex', rowGap: '15px', flexDirection: 'column', position: 'absolute', padding: '0 13%', top: '35%',
                         [theme.breakpoints.down('md')]: { padding: '0 7%', top: '30%' },
                         [theme.breakpoints.down(480)]: { textAlign: 'center', alignItems: 'center', rowGap: '5px', top: '25%' },
                     }}>
@@ -53,7 +55,7 @@ export const Banner: FC<Props> = (props) => {
                         <Box sx={{ height: '2px', width: '55%', backgroundColor: customColors.white }}>
                         </Box>
                         <Typography sx={{
-                            color: customColors.white, fontWeight: 400, maxWidth: '55%',
+                            color: customColors.white, fontWeight: 400, maxWidth: '80%',
                             [theme.breakpoints.down('md')]: { fontSize: '18px' },
                             [theme.breakpoints.up('md')]: { fontSize: '26px' },
                         }}>
