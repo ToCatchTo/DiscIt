@@ -51,7 +51,7 @@ const Friends: NextPage = () => {
             <Header></Header>
             <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/banner-background.jpg'} imgBg={false} />
             <Box sx={{
-                display: 'flex', padding: generalVariables.contentPadding, mt: '30px', mb: '60px',
+                display: 'flex', padding: generalVariables.contentPadding, mt: '30px', mb: '100px',
                 [theme.breakpoints.down('sm')]: { flexDirection: 'column', alignItems: 'center'},
                 [theme.breakpoints.down('md')]: { padding: '0 7%' },
             }}>

@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 let playerIndex = 0;
 let currentPlayground: Playground = { holesNumber: 0, isPublic: true, name: "", length: 0, parSum: 0 };
 let gameShotsList: Array<gameShots> = [];
+let shotNumber: number = 0;
 
 const AppPage: NextPage = () => {
   const lobbyList: string = localStorage.getItem('lobbyList') || '';
@@ -90,6 +91,7 @@ const AppPage: NextPage = () => {
     }
 
     setNumberOfShots(throwsList[playerIndex]);
+    shotNumber = throwsList[playerIndex];
     setCurrentPlayer(playersList[playerIndex].username);
     if (playerIndex + 1 > playersList.length - 1) {
       setNextPlayer(playersList[0].username);
@@ -101,10 +103,15 @@ const AppPage: NextPage = () => {
 
   const handleShots = (operation: string) => {
     if (operation === "add") {
+      shotNumber++;
       setNumberOfShots(numberOfShots + 1);
+      throwsList[playerIndex] = shotNumber;
+      console.log(shotNumber);
     }
     else {
+      shotNumber--;
       setNumberOfShots(numberOfShots - 1);
+      throwsList[shotNumber];
     }
   }
 
@@ -114,11 +121,9 @@ const AppPage: NextPage = () => {
     }
     else {
       for (let i = 0; i <= throwsList.length - 1; i++) {
-        console.log(throwsList[i]);
-        console.log(parNumber);
         throwsList[i] = throwsList[i] - parseInt(parNumber);
-        console.log(throwsList[i]);
       }
+      console.log(throwsList);
 
       gameShotsList[currentHole] = { shots: throwsList };
       if (currentHole + 1 === currentPlayground.holesNumber) {
@@ -128,6 +133,7 @@ const AppPage: NextPage = () => {
         setCurrentHole(currentHole + 1);
         setThrowsList(Array(throwsList.length).fill(0));
         setNumberOfShots(0);
+        shotNumber = 0;
       }
     }
   }

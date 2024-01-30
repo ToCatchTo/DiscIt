@@ -23,15 +23,15 @@ export const Banner: FC<Props> = (props) => {
         imgBg ?
             <Box sx={{
                 width: '100%',
-                [theme.breakpoints.down('md')]: { height: '65vh' },
+                [theme.breakpoints.down('md')]: { height: '72vh' },
                 [theme.breakpoints.up('md')]: { height: '100vh' },
                 [theme.breakpoints.down(400)]: { height: '70vh' },
             }}>
                 <Box sx={{
                     width: '100%', overflow: 'hidden', position: 'absolute', top: 0, zIndex: -1,
-                    [theme.breakpoints.down('md')]: { height: '85%' },
-                    [theme.breakpoints.up('md')]: { height: '110%' },
-                    [theme.breakpoints.down(400)]: { height: '92%' },
+                    [theme.breakpoints.down('md')]: { height: '85vh' },
+                    [theme.breakpoints.up('md')]: { height: '110vh' },
+                    [theme.breakpoints.down(400)]: { height: '92vh' },
                 }}>
                     <Hidden mdDown>
                         <Box sx={{ zIndex: 0, mt: '30px', ml: '13%', position: 'absolute', top: '10%' }}>
