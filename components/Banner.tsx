@@ -52,7 +52,7 @@ export const Banner: FC<Props> = (props) => {
                         }}>
                             {title}
                         </Typography>
-                        <Box sx={{ height: '2px', width: '55%', backgroundColor: customColors.white }}>
+                        <Box sx={{ height: '2px', width: '80%', backgroundColor: customColors.white }}>
                         </Box>
                         <Typography sx={{
                             color: customColors.white, fontWeight: 400, maxWidth: '80%',

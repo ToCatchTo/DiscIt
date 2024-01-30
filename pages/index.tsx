@@ -17,7 +17,7 @@ const Index: NextPage = () => {
   return (
     <Box>
       <Header></Header>
-      <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/banner-background.jpg'} imgBg={true} />
+      <Banner level={fileLevel} href={hrefArray} pageName={pagesArray} title={title} perex={perex} picturePath={'/media/background.jpg'} imgBg={true} />
       <ZigZag />
       <Box sx={{ pt: '30px' }}>
         <Footer />
