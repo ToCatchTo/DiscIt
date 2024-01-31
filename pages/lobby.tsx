@@ -77,6 +77,7 @@ const Lobby: NextPage = () => {
                 let tempList = playersList;
                 tempList.push(playerToAdd);
                 setPlayersList(tempList);
+                alert("Uživatel" + textFieldValue + " byl přidán do hry");
             }
         }
         else {
