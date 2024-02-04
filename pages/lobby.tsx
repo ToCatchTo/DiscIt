@@ -1,7 +1,7 @@
 import { Header } from '@/components/HeaderGroup/Header';
 import { Banner } from '@/components/Banner';
 import MainTheme, { customColors, generalVariables } from '@/styles/themes/mainThemeOptions';
-import { Box, Button, Container, Dialog, Menu, MenuItem, Pagination, TextField, ThemeProvider, Typography } from '@mui/material';
+import { Box, Button, Container, Dialog, Menu, MenuItem, OutlinedInput, Pagination, Select, TextField, ThemeProvider, Typography } from '@mui/material';
 import { NextPage } from 'next';
 import * as React from 'react';
 import { ZigZag } from '@/components/Zig-zag';
@@ -12,16 +12,18 @@ import { Player } from './api/graphql';
 import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 
+let currentUser: Player = { username: "", email: "", friendList: [], gamesSaved: [] };
+
 const Lobby: NextPage = () => {
     const [playersList, setPlayersList] = useState<Array<Player>>([]);
     const [addWindowOpened, setWindowOpen] = useState(false);
-    const [textFieldValue, setTextFieldValue] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
+    const [friendsAnchorEl, setFriendsAnchorEl] = useState(null);
     const [selectedPlayground, setSelectedPlayground] = useState<string>("");
+    const [selectedPlayer, setSelectedPlayer] = useState<string>("");
     const [playgroundsList, setPlaygroundsList] = useState<Array<string>>(["initialize"]);
     let currentUserEmailDirty = localStorage.getItem('currentUserEmail');
     const currentUserEmail = (currentUserEmailDirty ?? "").slice(1, -1);
-    let currentUser: Player = { username: "", email: "", friendList: [], gamesSaved: [] };
     const router = useRouter();
     let initializationDone = false;
 
@@ -50,13 +52,14 @@ const Lobby: NextPage = () => {
     useEffect(() => {
         if(initializationDone == false) {
             initializePlaygrounds();
+            setCurrentUser();
         }
     }, []);
 
     const handleAdd = async () => {
         let noDuplicate = true;
         playersList.forEach((item: Player) => {
-            if (item.username == textFieldValue)
+            if (item.username == selectedPlayer)
                 noDuplicate = false;
         });
 
@@ -64,7 +67,7 @@ const Lobby: NextPage = () => {
             const firestore = getFirestore();
             const usersRef = collection(firestore, 'users');
 
-            let targetUser = await getDocs(query(usersRef, where("username", "==", textFieldValue)));
+            let targetUser = await getDocs(query(usersRef, where("username", "==", selectedPlayer)));
             if (targetUser.docs.length == 0) {
                 alert("Uživatel nenalezen.");
             }
@@ -77,7 +80,7 @@ const Lobby: NextPage = () => {
                 let tempList = playersList;
                 tempList.push(playerToAdd);
                 setPlayersList(tempList);
-                alert("Uživatel " + textFieldValue + " byl přidán do hry");
+                alert("Uživatel " + selectedPlayer + " byl přidán do hry");
             }
         }
         else {
@@ -94,22 +97,31 @@ const Lobby: NextPage = () => {
         }
     }
 
-    const handleTextFieldChange = (event: any) => {
-        setTextFieldValue(event.target.value);
-    };
-
     const handleClick = (event: any) => {
         setAnchorEl(event.currentTarget);
+    };
+
+    const handleFriendsClick = (event: any) => {
+        setFriendsAnchorEl(event.currentTarget);
     };
 
     const handleClose = () => {
         setAnchorEl(null);
     };
 
+    const handleFriendsClose = () => {
+        setFriendsAnchorEl(null);
+    };
+
+    const handleFriendsItemClick = (playerName: string) => {
+        setSelectedPlayer(playerName);
+        handleClose();
+    };
+
     const handleMenuItemClick = (playgroundName: string) => {
         setSelectedPlayground(playgroundName);
         handleClose();
-      };
+    };
 
     const handleGameStart = (playground: string) => {
         if(playground != "") {
@@ -136,8 +148,6 @@ const Lobby: NextPage = () => {
         },
     };
 
-    setCurrentUser();
-
     return (
         <Box>
             <Header></Header>
@@ -163,7 +173,7 @@ const Lobby: NextPage = () => {
                             {selectedPlayground || 'Zvolte hřiště'}
                         </Button>
                         <Menu
-                            id="simple-menu"
+                            id="playgrounds-menu"
                             anchorEl={anchorEl}
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
@@ -183,7 +193,26 @@ const Lobby: NextPage = () => {
                     height: '100%', backgroundColor: customColors.lightBackground, display: 'flex', padding: '20px', flexDirection: 'column', gap: '20px'
                 }}>
                     <Typography sx={{ color: customColors.black, fontSize: '23px', fontWeight: 'bold' }}>Přidat hráče</Typography>
-                    <TextField sx={{ backgroundColor: customColors.white, borderRadius: '4px' }} variant="outlined" label="Zadejte jméno uživatele" value={textFieldValue} onChange={handleTextFieldChange} />
+                    {/* <TextField sx={{ backgroundColor: customColors.white, borderRadius: '4px' }} variant="outlined" label="Zadejte jméno uživatele" value={textFieldValue} onChange={handleTextFieldChange} /> */}
+                    <Box>
+                        <Button fullWidth onClick={handleFriendsClick} sx={{color: customColors.white, backgroundColor: customColors.darkBackground, borderRadius: '10px', fontWeight: 'bold', ...buttonHoverDark }}>
+                            {selectedPlayer || 'Zvolte přítele'}
+                        </Button>
+                        <Menu
+                            id="friends-menu"
+                            anchorEl={friendsAnchorEl}
+                            open={Boolean(friendsAnchorEl)}
+                            onClose={handleFriendsClose}
+                            sx={{maxHeight: '300px'}} 
+                            slotProps={{ paper: { style: { width: '100%', border: '2px solid ' + customColors.lightBackground  } } }}
+                        >
+                            {currentUser.friendList.map((item, index) => (
+                                <MenuItem key={index} onClick={() => handleFriendsItemClick(item.username)}>
+                                    {item.username}
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                    </Box>
                     <Button sx={{ backgroundColor: customColors.black, color: customColors.white, ...buttonHoverDark }} onClick={handleAdd}>Přidat</Button>
                 </Box>
             </Dialog>

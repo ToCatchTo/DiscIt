@@ -30,7 +30,7 @@ export const ZigZag = () => {
                             [theme.breakpoints.down('md')]: { fontSize: '16px'},
                             [theme.breakpoints.up('md')]: { fontSize: '22px'},
                          }}>
-                            Jestli je ještě discgolf náhodou neznáte, tak bude nejlepší když začnete zde. Zjistíte tu jaká jsou pravidla, jak se hraje, jaké jsou typy disků a všechno potřebné pro hru.
+                            Jestli náhodou discgolf ještě neznáte, začít zde je nejlepší možnost. Zjistíte zde pravidla, způsob hry, různé typy disků a všechny informace potřebné pro tento sport.
                         </Typography>
                     </Box>
                     <Box sx={{
@@ -70,7 +70,7 @@ export const ZigZag = () => {
                             [theme.breakpoints.down('md')]: { fontSize: '16px'},
                             [theme.breakpoints.up('md')]: { fontSize: '22px'},
                          }}>
-                            Zde se můžete dozvědět o všech hřištích v České Republice, jejich podrobných parametrech jako je počet jamek, délka nebo i také jestli je hřiště přístupné pro veřejnost. Tak pojďte najděte nejbližší hřiště a vyražte.
+                            Zde se můžete dozvědět o všech discgolfových hřištích v České Republice, včetně podrobností, jako je počet jamek, délka trasy a informace o tom, zda je hřiště přístupné pro veřejnost. Tak pojďte najít nejbližší hřiště a vyrazte.
                         </Typography>
                     </Box>
                 </Box>
@@ -94,7 +94,7 @@ export const ZigZag = () => {
                             [theme.breakpoints.down('md')]: { fontSize: '16px'},
                             [theme.breakpoints.up('md')]: { fontSize: '22px'},
                          }}>
-                            Zde najdete všechny svoje uložené odehrané hry, můžete si zobrazit detaily o hře a porovnat s ostatními. Přece jenom není lepší pocit než je vítězství po tvrdém výkonu.
+                            Zde najdete všechny své uložené odehrané hry. Můžete si zobrazit detaily o každé hře a porovnat své výsledky s ostatními. Přece jenom není lepší pocit než vítězství po tvrdém výkonu.
                         </Typography>
                     </Box>
                     <Box sx={{
@@ -134,7 +134,7 @@ export const ZigZag = () => {
                             [theme.breakpoints.down('md')]: { fontSize: '16px'},
                             [theme.breakpoints.up('md')]: { fontSize: '22px'},
                          }}>
-                            Discgolf je zábava sám o sobě, ale s partou přátel to je ještě lepší! Zde si můžete zobrazit a přidat přátel se, kterými si poté můžete užít společnou hru a zasoupeřit.
+                            Discgolf je zábava sám o sobě, ale s partou přátel je to ještě lepší! Zde si můžete prohlížet a přidávat přátele, se kterými si poté můžete užít společnou hru a soutěžit.
                         </Typography>
                     </Box>
                 </Box>
@@ -158,7 +158,7 @@ export const ZigZag = () => {
                             [theme.breakpoints.down('md')]: { fontSize: '16px'},
                             [theme.breakpoints.up('md')]: { fontSize: '22px'},
                          }}>
-                            Tato část webu slouží jako takový pomocník při hře. Pomáhá při počítání bodů a uložení hry k pozdějšímu porovnání. Je, ale zobrazitelný pouze na mobilu nebo tabletu, protože kdo by také hrál discgolf s notebookem ruce přece.
+                            Tato část webu slouží jako praktický pomocník při hře. Pomáhá s počítáním bodů a ukládáním hry pro pozdější porovnání. Je však zobrazitelná pouze na mobilních zařízeních nebo tabletech, protože kdo by také hrál discgolf s notebookem v ruce, že ano?
                         </Typography>
                     </Box>
                     <Box sx={{

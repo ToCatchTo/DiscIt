@@ -13,7 +13,7 @@ const About: NextPage = () => {
   const hrefArray = ['/', '/about'];
   const fileLevel = 2;
   const title = 'O hře';
-  const perex = 'Jestli ještě discgolf náhodou neznáte, tak bude nejlepší když začnete zde. Zjistíte tu jaká jsou pravidla, jak se hraje, jaké jsou typy disků a všechno potřebné pro hru.';
+  const perex = 'Jestli náhodou discgolf ještě neznáte, začít zde je nejlepší možnost. Zjistíte zde pravidla, způsob hry, různé typy disků a všechny informace potřebné pro tento sport.';
 
   return (
     <Box>
