@@ -31,7 +31,7 @@ export const Banner: FC<Props> = (props) => {
                     width: '100%', overflow: 'hidden', position: 'absolute', top: 0, zIndex: -1,
                     [theme.breakpoints.down('md')]: { height: '60vh' },
                     [theme.breakpoints.up('md')]: { height: '110vh' },
-                    [theme.breakpoints.down(400)]: { height: '92vh' },
+                    [theme.breakpoints.down(400)]: { height: '72vh' },
                 }}>
                     <Hidden mdDown>
                         <Box sx={{ zIndex: 0, mt: '30px', ml: '13%', position: 'absolute', top: '10%' }}>
