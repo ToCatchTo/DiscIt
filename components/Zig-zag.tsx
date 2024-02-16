@@ -34,11 +34,11 @@ export const ZigZag = () => {
                         </Typography>
                     </Box>
                     <Box sx={{
-                        borderRadius: '5px', overflow: 'hidden',
+                        borderRadius: '5px', overflow: 'hidden', maxHeight: '325px',
                         [theme.breakpoints.down('md')]: { width: '100%' },
                         [theme.breakpoints.up('md')]: { width: '41.5%' },
                     }}>
-                        <Box component='img' src="/media/targets-header.png" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
+                        <Box component='img' src="/media/about-about.jpg" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
                         </Box>
                     </Box>
                 </Box>
@@ -48,11 +48,11 @@ export const ZigZag = () => {
                     [theme.breakpoints.down('md')]: { flexDirection: 'column', rowGap: '30px' },
                 }}>
                     <Box sx={{
-                        borderRadius: '5px', overflow: 'hidden',
+                        borderRadius: '5px', overflow: 'hidden', maxHeight: '325px',
                         [theme.breakpoints.down('md')]: { width: '100%' },
                         [theme.breakpoints.up('md')]: { width: '41.5%' },
                     }}>
-                        <Box component='img' src="/media/targets-header.png" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
+                        <Box component='img' src="/media/playgrounds-about.jpg" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
                         </Box>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', rowGap: '15px', justifyContent: 'center',
@@ -102,7 +102,7 @@ export const ZigZag = () => {
                         [theme.breakpoints.down('md')]: { width: '100%' },
                         [theme.breakpoints.up('md')]: { width: '41.5%' },
                     }}>
-                        <Box component='img' src="/media/targets-header.png" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
+                        <Box component='img' src="/media/asd.jpg" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
                         </Box>
                     </Box>
                 </Box>
@@ -116,7 +116,7 @@ export const ZigZag = () => {
                         [theme.breakpoints.down('md')]: { width: '100%' },
                         [theme.breakpoints.up('md')]: { width: '41.5%' },
                     }}>
-                        <Box component='img' src="/media/targets-header.png" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
+                        <Box component='img' src="/media/pratele.jpg" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
                         </Box>
                     </Box>
                     <Box sx={{ display: 'flex', flexDirection: 'column', rowGap: '15px', justifyContent: 'center',
@@ -162,11 +162,11 @@ export const ZigZag = () => {
                         </Typography>
                     </Box>
                     <Box sx={{
-                        borderRadius: '5px', overflow: 'hidden',
+                        borderRadius: '5px', overflow: 'hidden', maxHeight: '325px',
                         [theme.breakpoints.down('md')]: { width: '100%' },
                         [theme.breakpoints.up('md')]: { width: '41.5%' },
                     }}>
-                        <Box component='img' src="/media/targets-header.png" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
+                        <Box component='img' src="/media/disky.jpg" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
                         </Box>
                     </Box>
                 </Box>

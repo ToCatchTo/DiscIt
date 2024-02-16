@@ -17,7 +17,7 @@ export const Logo = () => {
                     fontSize: '40px', color: customColors.white, fontWeight: 'bold',
                     [theme.breakpoints.down(480)]: { fontSize: '32px' },
                 }}>
-                    DiscIt
+                    Discit
                 </Typography>
             </Link>
         </ThemeProvider>
