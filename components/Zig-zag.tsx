@@ -102,7 +102,7 @@ export const ZigZag = () => {
                         [theme.breakpoints.down('md')]: { width: '100%' },
                         [theme.breakpoints.up('md')]: { width: '41.5%' },
                     }}>
-                        <Box component='img' src="/media/asd.jpg" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
+                        <Box component='img' src="/media/basket.jpg" sx={{ width: '100%', height: '100%', objectFit: 'cover' }}>
                         </Box>
                     </Box>
                 </Box>
