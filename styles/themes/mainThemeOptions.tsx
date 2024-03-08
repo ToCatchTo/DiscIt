@@ -119,6 +119,13 @@ const mainTheme: ThemeOptions = {
         }
       }
     },
+    MuiCssBaseline: {
+      styleOverrides: {
+        '::-webkit-scrollbar': {
+          display: 'none',
+        },
+      }
+    }
   },
 };
 
