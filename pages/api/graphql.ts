@@ -11,6 +11,14 @@ export interface Friend {
   email: string
 }
 
+export interface UserType {
+  email: String
+  username: String
+  friendList: [Friend]
+  pendingRequests: [friendRequest]
+  gamesSaved: [String]
+}
+
 export interface Player {
   username: string
   email: string

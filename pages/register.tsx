@@ -27,7 +27,9 @@ import { authUtils } from '@/firebase/authUtils';
 import mainTheme, { customColors } from '@/styles/themes/mainThemeOptions';
 import { Header } from '@/components/HeaderGroup/Header';
 import { useCreateUserMutationMutation } from '@/generated/graphql';
-import { collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import { addDoc, collection, getDocs, getFirestore, query, where } from 'firebase/firestore';
+import { User } from 'firebase/auth';
+import { UserType } from './api/graphql';
 
 const Register: NextPage = () => {
   const [email, setEmail] = useState('');
@@ -46,6 +48,8 @@ const Register: NextPage = () => {
 
   const handleForm = async (event: any) => {
     event.preventDefault();
+    const firestore = getFirestore();
+    const usersRef = collection(firestore, 'users');
     const usernameResult = await isUsernameUsed(username);
     const userData = usernameResult.docs.map((doc) => doc.data());
     const registerResult = await authUtils.register(email, password);
@@ -53,7 +57,8 @@ const Register: NextPage = () => {
     const pendingRequests: any = [];
     const gamesSaved: any = [];
     if (registerResult && userData.length == 0) {
-      createUser({ variables: { email, username, friendList, pendingRequests, gamesSaved } });
+      let newUser: UserType = { email, username, friendList, pendingRequests, gamesSaved };
+      await addDoc(usersRef, newUser);
       router.push('/login');
     }
 
