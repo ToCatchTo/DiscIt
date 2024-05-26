@@ -105,13 +105,11 @@ const Friends: NextPage = () => {
         let currentUser = await getDocs(query(usersRef, where("email", "==", currentUserEmail)));
         let alreadyFriended = false;
 
-        targetUser.docs[0].data().pendingRequests.forEach((request: any) => {
-            if (request.username == currentUser.docs[0].data().username) {
-                alreadyFriended = true;
-            }
-        })
-
-        console.log(targetUser.docs[0].data().pendingRequests);
+        // targetUser.docs[0].data().pendingRequests.forEach((request: any) => {
+        //     if (request.username == currentUser.docs[0].data().username) {
+        //         alreadyFriended = true;
+        //     }
+        // })
 
         if (!alreadyFriended) {
             friendList.forEach((friend: any) => {
